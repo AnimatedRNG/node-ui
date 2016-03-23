@@ -8,7 +8,6 @@
 *.sublime-project
 
 # Compiled files
-gen/
 bin/
 Testing/
 
