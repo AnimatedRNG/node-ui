@@ -1,0 +1,25 @@
+# Temporary files
+*~
+.*.swp
+.DS_STORE
+
+# Project Files
+*.sublime-workspace
+*.sublime-project
+
+# Compiled files
+gen/
+bin/
+Testing/
+
+# Unnecessary image assets
+*.xcf
+
+# CMake-specific files
+CMakeCache.txt
+CMakeFiles
+CMakeScripts
+CTestTestfile.cmake
+Makefile
+cmake_install.cmake
+install_manifest.txt
