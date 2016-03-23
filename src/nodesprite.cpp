@@ -1,3 +1,20 @@
+// Copyright (C) 2016 by Srinivas Kaza <srinivas@kaza.io>
+
+// This file is part of NodeUI
+
+// NodeUI free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by the Free
+// Software Foundation, either version 3 of the License, or (at your option)
+// any later version.
+
+// NodeUI is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+// more details.
+
+// You should have received a copy of the GNU General Public License along
+// with NodeUI.  If not, see <http://www.gnu.org/licenses/>.
+
 #include "util.h"
 #include "nodesprite.h"
 
@@ -33,7 +50,7 @@ void NodeSprite::destroyAssets() {
 void NodeSprite::render(const util::WindowProperties& winprops) {
     std::pair<int, int> size = util::toScreenCoords(winprops,
                                NodeSprite::getIdealSize(winprops));
-
+                               
     SDL_SetTextureColorMod(NodeSprite::unselected, tint[0], tint[1], tint[2]);
     util::renderTexture(NodeSprite::unselected, winprops.renderer,
                         this->_position.first, this->_position.second,
@@ -45,7 +62,7 @@ std::pair<double, double> NodeSprite::getIdealSize(const util::WindowProperties&
         winprops) {
     std::pair<int, int> resolution;
     SDL_GetWindowSize(winprops.window, &resolution.first, &resolution.second);
-
+    
     if (resolution.first > resolution.second)
         return std::pair<double, double> {NODE_WIDTH, NODE_HEIGHT* ((double) resolution.first / resolution.second)};
     else
