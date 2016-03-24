@@ -10,7 +10,7 @@ set(CMAKE_LIBRARY_OUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 include_directories("${PROJECT_BINARY_DIR}/include" "${PROJECT_BINARY_DIR}/include/lodepng")
 
-set(SRC_FILES src/util.cpp src/model.cpp src/screen.cpp src/nodesprite.cpp src/lodepng/lodepng.cpp)
+set(SRC_FILES src/util.cpp src/model.cpp src/screen.cpp src/controller.cpp src/keyboard_input.cpp src/nodesprite.cpp src/lodepng/lodepng.cpp)
 add_executable(${EXECUTABLE_NAME} ${SRC_FILES} src/nodeui.cpp)
 
 find_package(GLFW REQUIRED)

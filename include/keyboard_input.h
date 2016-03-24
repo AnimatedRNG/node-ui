@@ -15,9 +15,22 @@
 // You should have received a copy of the GNU General Public License along
 // with NodeUI.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "controller.h"
+#pragma once
 
+#include <memory>
+#include <unordered_map>
+#include <algorithm>
+#include <vector>
 
-void onReceive(std::string str) {
-    DEBUG(str);
-}
+#include "SDL.h"
+
+#include "input_device.h"
+#include "util.h"
+
+class KeyboardInput : public InputDevice {
+  public:
+    KeyboardInput(std::function<void(std::string)> emitter) :
+        InputDevice(emitter) { }
+        
+    void onSDLEvent(SDL_Event event);
+};

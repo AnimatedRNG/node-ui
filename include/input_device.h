@@ -15,9 +15,20 @@
 // You should have received a copy of the GNU General Public License along
 // with NodeUI.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "controller.h"
+#pragma once
 
+#include "SDL.h"
 
-void onReceive(std::string str) {
-    DEBUG(str);
-}
+#include "util.h"
+
+class InputDevice {
+  public:
+    InputDevice(std::function<void(std::string)> emitter) :
+        emitFunction(emitter) {
+        
+    }
+    
+    virtual void onSDLEvent(SDL_Event event) = 0;
+    
+    std::function<void(std::string)> emitFunction;
+};

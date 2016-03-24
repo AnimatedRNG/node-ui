@@ -16,3 +16,45 @@
 // with NodeUI.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
+
+#include <memory>
+#include <unordered_map>
+#include <algorithm>
+#include <vector>
+
+#include "SDL.h"
+
+#include "util.h"
+#include "node.h"
+#include "model.h"
+#include "screen.h"
+#include "input_device.h"
+#include "keyboard_input.h"
+
+void onReceive(std::string);
+
+class Controller {
+  public:
+    Controller(std::shared_ptr<Model> model, std::shared_ptr<Screen> screen) :
+        inputDevices() {
+        this->model = model;
+        this->screen = screen;
+        
+        inputDevices.push_back(std::shared_ptr<InputDevice>(new KeyboardInput(
+                                   onReceive)));
+                                   
+        auto signalAll = [&](SDL_Event event) {
+            for (auto device : this->inputDevices)
+                device->onSDLEvent(event);
+        };
+        
+        this->screen->setController(signalAll);
+    }
+    
+    friend void onReceive(std::string);
+  private:
+    std::shared_ptr<Model> model;
+    std::shared_ptr<Screen> screen;
+    
+    std::vector<std::shared_ptr<InputDevice>> inputDevices;
+};

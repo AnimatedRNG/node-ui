@@ -17,10 +17,15 @@
 
 #include <iostream>
 #include "screen.h"
+#include "model.h"
+#include "controller.h"
 
 void createScreen() {
-    Screen screen;
-    screen.start();
+    std::shared_ptr<Screen> screen(new Screen);
+    //Model model;
+    Controller controller(std::shared_ptr<Model>(nullptr),
+                          screen);
+    screen->start();
 }
 
 int main() {
