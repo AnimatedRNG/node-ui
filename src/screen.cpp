@@ -70,7 +70,9 @@ Screen::Screen() :
                 spacing.first * i - node_size.first / 2.0,
                 spacing.second * j - node_size.second / 2.0
             });
-            this->nodesprites.push_back(NodeSprite(position, this->properties));
+            this->nodesprites.insert({ {(int) i, (int) j},
+                NodeSprite(position, this->properties)
+            });
         }
     }
 }
@@ -127,8 +129,8 @@ std::pair<int, int> Screen::getResolution() {
 void Screen::render() {
     SDL_RenderClear(this->properties.renderer);
     
-    for (auto& node : this->nodesprites)
-        node.render(this->properties);
+    for (auto& map : this->nodesprites)
+        map.second.render(this->properties);
         
     SDL_RenderPresent(this->properties.renderer);
 }

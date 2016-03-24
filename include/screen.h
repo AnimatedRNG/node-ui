@@ -17,6 +17,8 @@
 
 #pragma once
 
+#include <unordered_map>
+
 #include "SDL.h"
 #include "SDL_shape.h"
 
@@ -58,5 +60,5 @@ class Screen {
     std::function<void(SDL_Event)> controller;
     int width, height;
     
-    std::vector<NodeSprite> nodesprites;
+    std::unordered_map<std::pair<int, int>, NodeSprite, pairhash> nodesprites;
 };

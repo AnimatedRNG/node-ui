@@ -44,6 +44,14 @@
 #define DEBUGARR(a)         for (int i = 0; i < std::end(a) - std::begin(a); i++) std::cout << a[i] << " "; std::cout << std::endl;
 #define ERROR(a)            std::cerr << a << std::endl
 
+struct pairhash {
+  public:
+    template <typename T, typename U>
+    std::size_t operator()(const std::pair<T, U>& x) const {
+        return std::hash<T>()(x.first) ^ std::hash<U>()(x.second);
+    }
+};
+
 namespace util {
 
     typedef std::vector<std::pair<int, int>> vec2i;
