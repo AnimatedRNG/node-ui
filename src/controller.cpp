@@ -18,6 +18,7 @@
 #include "controller.h"
 
 
-void onReceive(std::string str, std::shared_ptr<Model> model) {
+void onReceive(std::string str, std::shared_ptr<Model> model,
+               Controller* controller) {
     DEBUG(str);
 }
