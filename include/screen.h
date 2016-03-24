@@ -45,6 +45,9 @@ class Screen {
     static constexpr int HORIZONTAL_NODE_NUM = 3;
     static constexpr int VERTICAL_NODE_NUM = 3;
     
+    static constexpr double HORIZONTAL_PADDING = 0.2;
+    static constexpr double VERTICAL_PADDING = 0.2;
+    
     static bool initialized;
   private:
     void render();

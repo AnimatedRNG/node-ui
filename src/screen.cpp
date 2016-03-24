@@ -40,13 +40,21 @@ Screen::Screen(std::function<void(SDL_Event)> controller) :
     srand(time(NULL));
     SDL_DisplayMode current;
     SDL_GetCurrentDisplayMode(0, &current);
-    this->width = current.w;
-    this->height = current.h;
-    this->properties.window = SDL_CreateWindow(Screen::WINDOW_NAME, 0, 0,
+    std::pair<double, double> padding =
+        std::make_pair(current.w * HORIZONTAL_PADDING,
+                       current.h * VERTICAL_PADDING);
+    this->width = current.w - padding.first;
+    this->height = current.h - padding.second;
+    this->properties.window = SDL_CreateShapedWindow(Screen::WINDOW_NAME,
+                              this->width / 2 - padding.first / 2,
+                              this->height / 2 - padding.second / 2,
                               this->width, this->height,
-                              SDL_WINDOW_MAXIMIZED | SDL_WINDOW_FULLSCREEN_DESKTOP | SDL_WINDOW_MAXIMIZED |
+                              SDL_WINDOW_FULLSCREEN_DESKTOP |
                               SDL_WINDOW_BORDERLESS | SDL_WINDOW_ALLOW_HIGHDPI);
-                              
+    // Recenter window just in case
+    SDL_SetWindowPosition(this->properties.window, SDL_WINDOWPOS_CENTERED,
+                          SDL_WINDOWPOS_CENTERED);
+                          
     this->properties.renderer = SDL_CreateRenderer(this->properties.window, -1,
                                 SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
                                 
@@ -59,9 +67,10 @@ Screen::Screen(std::function<void(SDL_Event)> controller) :
     for (double i = 0.50; i < HORIZONTAL_NODE_NUM; i++) {
         for (double j = 0.50; j < VERTICAL_NODE_NUM; j++) {
             std::pair<double, double> spacing = {1.0 / HORIZONTAL_NODE_NUM, 1.0 / VERTICAL_NODE_NUM};
-            std::pair<int, int> position = util::toScreenCoords(this->properties, {spacing.first * i - node_size.first / 2.0,
-                                           spacing.second * j - node_size.second / 2.0
-                                                                                  });
+            std::pair<int, int> position = util::toScreenCoords(this->properties, {
+                spacing.first * i - node_size.first / 2.0,
+                spacing.second * j - node_size.second / 2.0
+            });
             this->nodesprites.push_back(NodeSprite(position, this->properties));
         }
     }
