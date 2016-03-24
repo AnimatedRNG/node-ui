@@ -19,7 +19,7 @@
 #include "screen.h"
 
 void createScreen() {
-    Screen screen(NULL);
+    Screen screen;
     screen.start();
 }
 

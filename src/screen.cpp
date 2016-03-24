@@ -26,9 +26,8 @@
 
 bool Screen::initialized = false;
 
-Screen::Screen(std::function<void(SDL_Event)> controller) :
+Screen::Screen() :
     properties {NULL, NULL},
-    controller(controller),
     width(0),
     height(0),
     nodesprites() {
@@ -79,6 +78,10 @@ Screen::Screen(std::function<void(SDL_Event)> controller) :
 Screen::~Screen() {
     SDL_DestroyRenderer(this->properties.renderer);
     SDL_DestroyWindow(this->properties.window);
+}
+
+void Screen::setController(std::function<void(SDL_Event)> controller) {
+    this->controller = controller;
 }
 
 void Screen::start() {

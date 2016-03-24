@@ -25,7 +25,7 @@
 
 class Screen {
   public:
-    Screen(std::function<void(SDL_Event)> controller);
+    Screen();
     Screen(Screen&&) =
         default;                                                                            // Move constructor
     ~Screen();                                                                              // Destructor
@@ -34,6 +34,8 @@ class Screen {
     Screen& operator= (Screen&&)& =
         default;                                                                            // Move assignment operator
         
+    void setController(std::function<void(SDL_Event)> controller);
+    
     void start();
     static void terminate();
     
