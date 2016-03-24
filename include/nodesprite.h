@@ -27,12 +27,16 @@ class NodeSprite {
   public:
     NodeSprite(const std::pair<int, int>& position,
                const util::WindowProperties& winprops);
-               
+    NodeSprite(const NodeSprite& nodesprite) = default;
+    
     static void loadAssets(SDL_Renderer* renderer);
     static void destroyAssets();
     static std::pair<double, double> getIdealSize(const util::WindowProperties&
             winprops);
             
+    void select();
+    void unselect();
+    
     void render(const util::WindowProperties& winprops);
     
     static constexpr double NODE_WIDTH = 0.1;

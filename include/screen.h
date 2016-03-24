@@ -60,5 +60,6 @@ class Screen {
     std::function<void(SDL_Event)> controller;
     int width, height;
     
-    std::unordered_map<std::pair<int, int>, NodeSprite, pairhash> nodesprites;
+    std::unordered_map<std::pair<int, int>, std::shared_ptr<NodeSprite>, pairhash>
+    nodesprites;
 };

@@ -47,6 +47,16 @@ void NodeSprite::destroyAssets() {
     SDL_DestroyTexture(NodeSprite::unselected);
 }
 
+void NodeSprite::select() {
+    uint8_t selected[] = {0xFF, 0xDF, 0x00};
+    memcpy(&(this->tint), &selected, 3 * sizeof(int));
+}
+
+void NodeSprite::unselect() {
+    uint8_t unselected[] = {255, 255, 255};
+    memcpy(&(this->tint), &unselected, 3 * sizeof(int));
+}
+
 void NodeSprite::render(const util::WindowProperties& winprops) {
     std::pair<int, int> size = util::toScreenCoords(winprops,
                                NodeSprite::getIdealSize(winprops));

@@ -70,11 +70,15 @@ Screen::Screen() :
                 spacing.first * i - node_size.first / 2.0,
                 spacing.second * j - node_size.second / 2.0
             });
-            this->nodesprites.insert({ {(int) i, (int) j},
-                NodeSprite(position, this->properties)
-            });
+            
+            std::pair<int, int> index = {(int) i, (int) j};
+            std::shared_ptr<NodeSprite> sprite = std::shared_ptr<NodeSprite>(new NodeSprite(
+                    position, this->properties));
+            this->nodesprites.insert(std::make_pair(index, sprite));
         }
     }
+    
+    this->nodesprites.at({0, 0})->select();
 }
 
 Screen::~Screen() {
@@ -130,7 +134,7 @@ void Screen::render() {
     SDL_RenderClear(this->properties.renderer);
     
     for (auto& map : this->nodesprites)
-        map.second.render(this->properties);
+        map.second->render(this->properties);
         
     SDL_RenderPresent(this->properties.renderer);
 }
