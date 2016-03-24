@@ -26,10 +26,11 @@
 
 #include "input_device.h"
 #include "util.h"
+#include "model.h"
 
 class KeyboardInput : public InputDevice {
   public:
-    KeyboardInput(std::function<void(std::string)> emitter) :
+    KeyboardInput(std::function<void(std::string)> emitter):
         InputDevice(emitter) { }
         
     void onSDLEvent(SDL_Event event);

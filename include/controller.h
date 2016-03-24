@@ -31,7 +31,7 @@
 #include "input_device.h"
 #include "keyboard_input.h"
 
-void onReceive(std::string);
+void onReceive(std::string str, std::shared_ptr<Model> model);
 
 class Controller {
   public:
@@ -40,8 +40,12 @@ class Controller {
         this->model = model;
         this->screen = screen;
         
+        auto receiveFunc = [&](std::string str) {
+            return onReceive(str, model);
+        };
+        std::function<void(std::string)> func = receiveFunc;
         inputDevices.push_back(std::shared_ptr<InputDevice>(new KeyboardInput(
-                                   onReceive)));
+                                   func)));
                                    
         auto signalAll = [&](SDL_Event event) {
             for (auto device : this->inputDevices)
@@ -51,7 +55,7 @@ class Controller {
         this->screen->setController(signalAll);
     }
     
-    friend void onReceive(std::string);
+    friend void onReceive(std::string str, std::shared_ptr<Model> model);
   private:
     std::shared_ptr<Model> model;
     std::shared_ptr<Screen> screen;

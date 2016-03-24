@@ -20,6 +20,7 @@
 #include "SDL.h"
 
 #include "util.h"
+#include "model.h"
 
 class InputDevice {
   public:
