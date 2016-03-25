@@ -21,10 +21,15 @@
 #include "controller.h"
 
 void createScreen() {
+    std::vector<Model::command_position> paths;
+    paths.push_back(std::make_pair(util::Command {"Example"}, util::vec2i{ {1, 1}, {1, 2}, {2, 2} }));
+    paths.push_back(std::make_pair(util::Command {"Example2"}, util::vec2i{ {1, 1}, {1, 0}, {0, 0} }));
+    paths.push_back(std::make_pair(util::Command {"Example3"}, util::vec2i{ {1, 1}, {1, 0}, {2, 0} }));
+    
     std::shared_ptr<Screen> screen(new Screen);
-    //Model model;
-    Controller controller(std::shared_ptr<Model>(nullptr),
-                          screen);
+    std::shared_ptr<Model> model(new Model(
+                                     std::make_shared<std::vector<Model::command_position>>(paths)));
+    Controller controller(model, screen);
     screen->start();
 }
 

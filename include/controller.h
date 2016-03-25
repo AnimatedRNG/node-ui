@@ -53,7 +53,10 @@ class Controller {
         };
         
         this->screen->setController(signalAll);
+        this->updateView();
     }
+    
+    void updateView();
     
     friend void onReceive(std::string str, Controller* controller);
   private:

@@ -57,6 +57,11 @@ void NodeSprite::unselect() {
     memcpy(&(this->tint), &unselected, 3 * sizeof(int));
 }
 
+void NodeSprite::highlight() {
+    uint8_t unselected[] = {0x1E, 0x90, 0xFF};
+    memcpy(&(this->tint), &unselected, 3 * sizeof(int));
+}
+
 void NodeSprite::render(const util::WindowProperties& winprops) {
     std::pair<int, int> size = util::toScreenCoords(winprops,
                                NodeSprite::getIdealSize(winprops));

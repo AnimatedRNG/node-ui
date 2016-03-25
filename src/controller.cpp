@@ -20,4 +20,13 @@
 
 void onReceive(std::string str, Controller* controller) {
     DEBUG(str);
+    controller->model = controller->model->select(str);
+    controller->updateView();
+}
+
+void Controller::updateView() {
+    auto path = * (this->model->getPath());
+    for (auto& node : path)
+        this->screen->selectNode(node);
+    this->screen->highlightNode(*(path.end() - 1));
 }

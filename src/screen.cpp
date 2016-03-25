@@ -77,8 +77,6 @@ Screen::Screen() :
             this->nodesprites.insert(std::make_pair(index, sprite));
         }
     }
-    
-    this->nodesprites.at({0, 0})->select();
 }
 
 Screen::~Screen() {
@@ -124,6 +122,18 @@ void Screen::terminate() {
     NodeSprite::destroyAssets();
     
     SDL_Quit();
+}
+
+void Screen::selectNode(const std::pair<int, int>& position) {
+    this->nodesprites.at(position)->select();
+}
+
+void Screen::deselectNode(const std::pair<int, int>& position) {
+    this->nodesprites.at(position)->unselect();
+}
+
+void Screen::highlightNode(const std::pair<int, int>& position) {
+    this->nodesprites.at(position)->highlight();
 }
 
 std::pair<int, int> Screen::getResolution() {

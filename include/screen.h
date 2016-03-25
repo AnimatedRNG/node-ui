@@ -41,6 +41,10 @@ class Screen {
     void start();
     static void terminate();
     
+    void selectNode(const std::pair<int, int>& position);
+    void deselectNode(const std::pair<int, int>& position);
+    void highlightNode(const std::pair<int, int>& position);
+    
     std::pair<int, int> getResolution();
     
     static constexpr const char* WINDOW_NAME = "NodeUI";

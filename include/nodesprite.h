@@ -36,6 +36,7 @@ class NodeSprite {
             
     void select();
     void unselect();
+    void highlight();
     
     void render(const util::WindowProperties& winprops);
     
