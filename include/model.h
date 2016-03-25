@@ -42,12 +42,14 @@ class Model {
         // For every path in the paths
         for (auto& path : *allPaths) {
             // Make sure that the path is defined
-            assert(path.second.size() != 0);
+            if (path.second.size() == 0)
+                throw std::runtime_error("Path is empty!");
             std::pair<int, int> should_be_root = path.second[0];
             
             // The first node of every path should be the root
-            assert(should_be_root == root_node);
-            
+            if (should_be_root != root_node)
+                throw std::runtime_error("Path does not begin with root node!");
+                
             std::pair<int, int> lastPosition = root_node;
             
             std::shared_ptr<Node<util::Command>> curr = root;

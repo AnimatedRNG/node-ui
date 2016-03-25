@@ -32,15 +32,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-
-#include "SDL.h"
-#include "SDL_shape.h"
-#include "lodepng/lodepng.h"
-
 #include <QApplication>
 #include <QKeyEvent>
 #include <QWidget>
@@ -79,17 +70,10 @@ namespace util {
         return strm << command.name;
     }
     
-    GLuint LoadShaders(const char* vertex_file_path,
-                       const char* fragment_file_path);
-                       
-    SDL_Texture* loadPNG(const std::string& assetName, SDL_Renderer* renderer);
     void renderQTImage(QPainter& painter, QPixmap image, int x, int y,
                        int width, int height, int* frame,
                        int frame_num,
                        int frame_delay);
-    void renderTexture(SDL_Texture* texture, SDL_Renderer* renderer, int x, int y,
-                       int width = -1, int height = -1, int* frame = NULL, int frame_num = -1,
-                       int frame_delay = 1);
                        
     std::pair<int, int> toScreenCoords(const WindowProperties& props,
                                        std::pair<double, double> coords);
