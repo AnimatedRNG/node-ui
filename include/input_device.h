@@ -17,8 +17,6 @@
 
 #pragma once
 
-#include "SDL.h"
-
 #include "util.h"
 #include "model.h"
 
@@ -29,7 +27,7 @@ class InputDevice {
         
     }
     
-    virtual void onSDLEvent(SDL_Event event) = 0;
+    virtual void onKeyEvent(QKeyEvent* event) = 0;
     
     std::function<void(std::string)> emitFunction;
 };

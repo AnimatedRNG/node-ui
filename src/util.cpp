@@ -112,6 +112,27 @@ GLuint util::LoadShaders(const char* vertex_file_path,
     return ProgramID;
 }
 
+void util::renderQTImage(QPainter& painter, QPixmap image, int x, int y,
+                         int width, int height, int* frame,
+                         int frame_num,
+                         int frame_delay) {
+    if (frame == NULL)
+        return;
+    else
+        *frame = (*frame + 1) % (frame_num * frame_delay);
+        
+    QRectF dst(x, y, image.width(), image.height());
+    if (width > 0 && height > 0) {
+        dst.setWidth(width);
+        dst.setHeight(height);
+    }
+    
+    int w = image.width() / frame_num;
+    QRectF src(w * (*frame / frame_delay), 0, w, image.height());
+    
+    painter.drawPixmap(dst, image, src);
+}
+
 void util::renderTexture(SDL_Texture* tex, SDL_Renderer* ren, int x, int y,
                          int width, int height,
                          int* frame, int frame_num, int frame_delay) {
@@ -191,8 +212,7 @@ SDL_Texture* util::loadPNG(const std::string& assetName,
 
 std::pair<int, int> util::toScreenCoords(const WindowProperties& props,
         std::pair<double, double> coords) {
-    std::pair<int, int> resolution;
-    SDL_GetWindowSize(props.window, &resolution.first, &resolution.second);
+    std::pair<int, int> resolution = {props.width, props.height};
     
     return std::pair<int, int> { resolution.first * coords.first, resolution.second * coords.second };
 }

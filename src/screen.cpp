@@ -23,44 +23,28 @@
 #include "util.h"
 #include "screen.h"
 
-
-bool Screen::initialized = false;
-
-Screen::Screen() :
-    properties {NULL, NULL},
-    width(0),
-    height(0),
+Screen::Screen(QWidget* parent) :
+    QWidget(parent),
+    properties {0, 0},
     nodesprites() {
-    if (!initialized) {
-        SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER);
-        Screen::initialized = true;
-    }
     
     srand(time(NULL));
-    SDL_DisplayMode current;
-    SDL_GetCurrentDisplayMode(0, &current);
+    
+    QRect rec = QApplication::desktop()->screenGeometry();
     std::pair<double, double> padding =
-        std::make_pair(current.w * HORIZONTAL_PADDING,
-                       current.h * VERTICAL_PADDING);
-    this->width = current.w - padding.first;
-    this->height = current.h - padding.second;
-    this->properties.window = SDL_CreateShapedWindow(Screen::WINDOW_NAME,
-                              this->width / 2 - padding.first / 2,
-                              this->height / 2 - padding.second / 2,
-                              this->width, this->height,
-                              SDL_WINDOW_FULLSCREEN_DESKTOP |
-                              SDL_WINDOW_BORDERLESS | SDL_WINDOW_ALLOW_HIGHDPI);
-    // Recenter window just in case
-    SDL_SetWindowPosition(this->properties.window, SDL_WINDOWPOS_CENTERED,
-                          SDL_WINDOWPOS_CENTERED);
-                          
-    this->properties.renderer = SDL_CreateRenderer(this->properties.window, -1,
-                                SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-                                
-    if (this->properties.renderer == nullptr)
-        throw std::runtime_error("Failed to create renderer: " + std::string(
-                                     SDL_GetError()));
-                                     
+        std::make_pair(rec.width() * HORIZONTAL_PADDING,
+                       rec.height() * VERTICAL_PADDING);
+    this->properties.width = rec.width() - padding.first;
+    this->properties.height = rec.height() - padding.second;
+    this->resize(this->properties.width, this->properties.height);
+    this->setFixedSize(this->properties.width, this->properties.height);
+    this->move(QApplication::desktop()->availableGeometry().center() -
+               this->rect().center());
+               
+    this->setStyleSheet("background:transparent;");
+    this->setAttribute(Qt::WA_TranslucentBackground);
+    this->setWindowFlags(Qt::FramelessWindowHint);
+    
     std::pair<double, double> node_size = NodeSprite::getIdealSize(
             this->properties);
     for (double i = 0.50; i < HORIZONTAL_NODE_NUM; i++) {
@@ -80,48 +64,48 @@ Screen::Screen() :
 }
 
 Screen::~Screen() {
-    SDL_DestroyRenderer(this->properties.renderer);
-    SDL_DestroyWindow(this->properties.window);
+    // I guess QT does all our work now?
 }
 
-void Screen::setController(std::function<void(SDL_Event)> controller) {
+void Screen::timerEvent(QTimerEvent* event) {
+    Q_UNUSED(event);
+    repaint();
+}
+
+void Screen::keyPressEvent(QKeyEvent* event) {
+    if (this->controller != nullptr)
+        this->controller(event);
+}
+
+void Screen::paintEvent(QPaintEvent* event) {
+    Q_UNUSED(event);
+    QPainter qp(this);
+    
+    try {
+        this->render(qp);
+    } catch (...) {
+        std::exception_ptr p = std::current_exception();
+        std::clog << (p ? p.__cxa_exception_type() -> name() : "null") << std::endl;
+        
+        Screen::terminate();
+    }
+}
+
+void Screen::closeEvent(QCloseEvent* event) {
+    QApplication::quit();
+}
+
+void Screen::setController(std::function<void(QKeyEvent*)> controller) {
     this->controller = controller;
 }
 
 void Screen::start() {
-    SDL_Event event;
-    
-    while (true) {
-        if (SDL_PollEvent(&event)) {
-            switch (event.type) {
-                case SDL_QUIT:
-                    return;
-                case SDL_WINDOWEVENT_CLOSE:
-                    return;
-                default:
-                    if (this->controller != nullptr)
-                        this->controller(event);
-            }
-        }
-        
-        try {
-            this->render();
-        } catch (...) {
-            std::exception_ptr p = std::current_exception();
-            std::clog << (p ? p.__cxa_exception_type() -> name() : "null") << std::endl;
-            
-            Screen::terminate();
-        }
-        
-        SDL_Delay(1000 / Screen::FRAMERATE);
-    }
+    timerID = startTimer(1000 / Screen::FRAMERATE);
 }
 
 void Screen::terminate() {
     std::cout << "Destroying assets" << std::endl;
     NodeSprite::destroyAssets();
-    
-    SDL_Quit();
 }
 
 void Screen::selectNode(const std::pair<int, int>& position) {
@@ -137,14 +121,10 @@ void Screen::highlightNode(const std::pair<int, int>& position) {
 }
 
 std::pair<int, int> Screen::getResolution() {
-    return std::make_pair(this->width, this->height);
+    return std::make_pair(this->properties.width, this->properties.height);
 }
 
-void Screen::render() {
-    SDL_RenderClear(this->properties.renderer);
-    
+void Screen::render(QPainter& painter) {
     for (auto& map : this->nodesprites)
-        map.second->render(this->properties);
-        
-    SDL_RenderPresent(this->properties.renderer);
+        map.second->render(this->properties, painter);
 }

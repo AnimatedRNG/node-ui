@@ -22,7 +22,7 @@
 #include <algorithm>
 #include <vector>
 
-#include "SDL.h"
+#include <QKeyEvent>
 
 #include "util.h"
 #include "node.h"
@@ -47,9 +47,9 @@ class Controller {
         inputDevices.push_back(std::shared_ptr<InputDevice>(new KeyboardInput(
                                    func)));
                                    
-        auto signalAll = [&](SDL_Event event) {
+        auto signalAll = [&](QKeyEvent * event) {
             for (auto device : this->inputDevices)
-                device->onSDLEvent(event);
+                device->onKeyEvent(event);
         };
         
         this->screen->setController(signalAll);

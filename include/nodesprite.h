@@ -19,7 +19,9 @@
 
 #include <algorithm>
 
-#include "SDL.h"
+#include <QImage>
+#include <QColor>
+#include <QPainter>
 
 #include "util.h"
 
@@ -29,7 +31,7 @@ class NodeSprite {
                const util::WindowProperties& winprops);
     NodeSprite(const NodeSprite& nodesprite) = default;
     
-    static void loadAssets(SDL_Renderer* renderer);
+    static void loadAssets();
     static void destroyAssets();
     static std::pair<double, double> getIdealSize(const util::WindowProperties&
             winprops);
@@ -38,7 +40,7 @@ class NodeSprite {
     void unselect();
     void highlight();
     
-    void render(const util::WindowProperties& winprops);
+    void render(const util::WindowProperties& winprops, QPainter& painter);
     
     static constexpr double NODE_WIDTH = 0.1;
     static constexpr double NODE_HEIGHT = 0.1;
@@ -47,7 +49,11 @@ class NodeSprite {
     
     std::pair<int, int> _position;
   private:
-    static SDL_Texture* unselected;
+    void drawOverlay(QPainter& painter);
+    
+    static std::unique_ptr<QPixmap> unselected;
+    QPixmap current;
+    std::pair<int, int> size;
     
     static bool initialized;
     

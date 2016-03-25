@@ -11,6 +11,11 @@
 bin/
 Testing/
 
+# Moc files
+*_automoc.cpp
+*.cpp_parameters
+moc_*
+
 # Unnecessary image assets
 *.xcf
 

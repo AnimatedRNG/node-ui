@@ -22,8 +22,6 @@
 #include <algorithm>
 #include <vector>
 
-#include "SDL.h"
-
 #include "input_device.h"
 #include "util.h"
 #include "model.h"
@@ -33,5 +31,5 @@ class KeyboardInput : public InputDevice {
     KeyboardInput(std::function<void(std::string)> emitter):
         InputDevice(emitter) { }
         
-    void onSDLEvent(SDL_Event event);
+    void onKeyEvent(QKeyEvent* event);
 };

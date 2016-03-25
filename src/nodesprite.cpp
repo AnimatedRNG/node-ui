@@ -18,8 +18,8 @@
 #include "util.h"
 #include "nodesprite.h"
 
+std::unique_ptr<QPixmap> NodeSprite::unselected = nullptr;
 bool NodeSprite::initialized = false;
-SDL_Texture* NodeSprite::unselected = NULL;
 constexpr double NodeSprite::NODE_WIDTH;
 constexpr double NodeSprite::NODE_HEIGHT;
 constexpr int NodeSprite::NUM_FRAMES;
@@ -28,23 +28,30 @@ NodeSprite::NodeSprite(const std::pair<int, int>& position,
                        const util::WindowProperties& winprops) :
     _position(position),
     frame(rand() % NodeSprite::NUM_FRAMES),
+    size(),
     tint {255, 255, 255} {
     if (!initialized) {
         try {
-            NodeSprite::loadAssets(winprops.renderer);
+            NodeSprite::loadAssets();
         } catch (std::runtime_error& e) {
             throw;
         }
         initialized = true;
     }
+    this->size = util::toScreenCoords(winprops,
+                                      NodeSprite::getIdealSize(winprops));
+    this->current = NodeSprite::unselected->copy();
 }
 
-void NodeSprite::loadAssets(SDL_Renderer* renderer) {
-    NodeSprite::unselected = util::loadPNG("assets/Node_Unselected.png", renderer);
+void NodeSprite::loadAssets() {
+    QImage temp;
+    temp.load("assets/Node_Unselected.png");
+    NodeSprite::unselected = std::unique_ptr<QPixmap>(new QPixmap);
+    NodeSprite::unselected->convertFromImage(temp);
 }
 
 void NodeSprite::destroyAssets() {
-    SDL_DestroyTexture(NodeSprite::unselected);
+    // I guess QT does all our work now?
 }
 
 void NodeSprite::select() {
@@ -58,28 +65,31 @@ void NodeSprite::unselect() {
 }
 
 void NodeSprite::highlight() {
-    uint8_t unselected[] = {0x1E, 0x90, 0xFF};
-    memcpy(&(this->tint), &unselected, 3 * sizeof(int));
+    uint8_t highlighted[] = {0x1E, 0x90, 0xFF};
+    memcpy(&(this->tint), &highlighted, 3 * sizeof(int));
 }
 
-void NodeSprite::render(const util::WindowProperties& winprops) {
-    std::pair<int, int> size = util::toScreenCoords(winprops,
-                               NodeSprite::getIdealSize(winprops));
-                               
-    SDL_SetTextureColorMod(NodeSprite::unselected, tint[0], tint[1], tint[2]);
-    util::renderTexture(NodeSprite::unselected, winprops.renderer,
+void NodeSprite::render(const util::WindowProperties& winprops,
+                        QPainter& painter) {
+    util::renderQTImage(painter, current,
                         this->_position.first, this->_position.second,
                         size.first, size.second, &frame, 4, 10);
-    SDL_SetTextureColorMod(NodeSprite::unselected, 255, 255, 255);
+    this->drawOverlay(painter);
 }
 
 std::pair<double, double> NodeSprite::getIdealSize(const util::WindowProperties&
         winprops) {
-    std::pair<int, int> resolution;
-    SDL_GetWindowSize(winprops.window, &resolution.first, &resolution.second);
+    std::pair<int, int> resolution = {winprops.width, winprops.height};
     
     if (resolution.first > resolution.second)
         return std::pair<double, double> {NODE_WIDTH, NODE_HEIGHT* ((double) resolution.first / resolution.second)};
     else
         return std::pair<double, double> {NODE_WIDTH* ((double) resolution.second / resolution.first), NODE_HEIGHT};
+}
+
+void NodeSprite::drawOverlay(QPainter& painter) {
+    painter.setBrush(QColor(tint[0], tint[1], tint[2], 100));
+    QRectF idealRect = QRectF(this->_position.first, this->_position.second,
+                              size.first, size.second);
+    painter.drawEllipse(idealRect);
 }

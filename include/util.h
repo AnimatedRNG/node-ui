@@ -38,7 +38,14 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "SDL.h"
+#include "SDL_shape.h"
 #include "lodepng/lodepng.h"
+
+#include <QApplication>
+#include <QKeyEvent>
+#include <QWidget>
+#include <QPainter>
+#include <QTime>
 
 #define DEBUG(a)            std::cout << a << std::endl
 #define DEBUGARR(a)         for (int i = 0; i < std::end(a) - std::begin(a); i++) std::cout << a[i] << " "; std::cout << std::endl;
@@ -60,8 +67,8 @@ namespace util {
     static constexpr int GRID_HEIGHT = 3;
     
     struct WindowProperties {
-        SDL_Window* window;
-        SDL_Renderer* renderer;
+        int width;
+        int height;
     };
     
     struct Command {
@@ -76,6 +83,10 @@ namespace util {
                        const char* fragment_file_path);
                        
     SDL_Texture* loadPNG(const std::string& assetName, SDL_Renderer* renderer);
+    void renderQTImage(QPainter& painter, QPixmap image, int x, int y,
+                       int width, int height, int* frame,
+                       int frame_num,
+                       int frame_delay);
     void renderTexture(SDL_Texture* texture, SDL_Renderer* renderer, int x, int y,
                        int width = -1, int height = -1, int* frame = NULL, int frame_num = -1,
                        int frame_delay = 1);

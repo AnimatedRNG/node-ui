@@ -19,15 +19,22 @@
 
 #include <unordered_map>
 
-#include "SDL.h"
-#include "SDL_shape.h"
+#include <QApplication>
+#include <QDesktopWidget>
+#include <QKeyEvent>
+#include <QWidget>
+#include <QPainter>
+#include <QTime>
 
 #include "util.h"
 #include "nodesprite.h"
 
-class Screen {
+class Screen : public QWidget {
+
+    Q_OBJECT
+    
   public:
-    Screen();
+    Screen(QWidget* parent = 0);
     Screen(Screen&&) =
         default;                                                                            // Move constructor
     ~Screen();                                                                              // Destructor
@@ -36,7 +43,7 @@ class Screen {
     Screen& operator= (Screen&&)& =
         default;                                                                            // Move assignment operator
         
-    void setController(std::function<void(SDL_Event)> controller);
+    void setController(std::function<void(QKeyEvent*)> controller);
     
     void start();
     static void terminate();
@@ -56,13 +63,18 @@ class Screen {
     static constexpr double HORIZONTAL_PADDING = 0.2;
     static constexpr double VERTICAL_PADDING = 0.2;
     
-    static bool initialized;
+    int timerID;
+    
+  protected:
+    void timerEvent(QTimerEvent* event);
+    void keyPressEvent(QKeyEvent* event);
+    void paintEvent(QPaintEvent* event);
+    void closeEvent(QCloseEvent* event);
   private:
-    void render();
+    void render(QPainter& painter);
     
     util::WindowProperties properties;
-    std::function<void(SDL_Event)> controller;
-    int width, height;
+    std::function<void(QKeyEvent*)> controller;
     
     std::unordered_map<std::pair<int, int>, std::shared_ptr<NodeSprite>, pairhash>
     nodesprites;

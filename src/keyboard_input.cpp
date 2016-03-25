@@ -17,33 +17,33 @@
 
 #include "keyboard_input.h"
 
-void KeyboardInput::onSDLEvent(SDL_Event event) {
-    if (event.type == SDL_KEYDOWN) {
-        switch (event.key.keysym.sym) {
-            case SDLK_h:
-                emitFunction("l_");
-                break;
-            case SDLK_j:
-                emitFunction("d_");
-                break;
-            case SDLK_k:
-                emitFunction("u_");
-                break;
-            case SDLK_l:
-                emitFunction("r_");
-                break;
-            case SDLK_y:
-                emitFunction("ul");
-                break;
-            case SDLK_u:
-                emitFunction("ur");
-                break;
-            case SDLK_b:
-                emitFunction("dl");
-                break;
-            case SDLK_n:
-                emitFunction("dr");
-                break;
-        }
+void KeyboardInput::onKeyEvent(QKeyEvent* event) {
+    int key = event->key();
+    
+    switch (key) {
+        case Qt::Key_H:
+            emitFunction("l_");
+            break;
+        case Qt::Key_J:
+            emitFunction("d_");
+            break;
+        case Qt::Key_K:
+            emitFunction("u_");
+            break;
+        case Qt::Key_L:
+            emitFunction("r_");
+            break;
+        case Qt::Key_Y:
+            emitFunction("ul");
+            break;
+        case Qt::Key_U:
+            emitFunction("ur");
+            break;
+        case Qt::Key_B:
+            emitFunction("dl");
+            break;
+        case Qt::Key_N:
+            emitFunction("dr");
+            break;
     }
 }
