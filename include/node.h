@@ -155,7 +155,8 @@ inline std::ostream& operator<<(std::ostream& strm, Node<T> const& node) {
         strm << "Data: " << *(node.data);
     else
         strm << "No data found";
-    for (auto child : *node.unpack()) {
+    auto unpackedChildren = * node.unpack();
+    for (auto child : unpackedChildren) {
         if (child.second != nullptr) {
             strm << "\t" << child.first << ": " << *(child.second);
             strm << "\n";

@@ -60,8 +60,12 @@ class Model {
                 else {
                     // Get the move between the two nodes
                     std::string direction = getDeltaDirection(delta);
-                    std::shared_ptr<Node<util::Command>> child(new Node<util::Command>
-                                                      (curr));
+                    std::shared_ptr<Node<util::Command>> child;
+                    if (!curr->hasElement(direction))
+                        child = std::shared_ptr<Node<util::Command>>
+                                (new Node<util::Command>(curr));
+                    else
+                        child = curr->getElement(direction);
                     curr->setElement(direction, child);
                     curr = child;
                 }
