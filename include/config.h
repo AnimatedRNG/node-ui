@@ -70,7 +70,7 @@ namespace Config {
             
             util::vec2i pathValues;
             const Json::Value commandPath = entry["path"];
-            for (int i = 0; i < entry.size(); i++) {
+            for (int i = 0; i < commandPath.size(); i++) {
                 const Json::Value coordinate = commandPath[i];
                 std::string errorPrefix = "Path associated with command "
                                           + entry["command"].asString();
