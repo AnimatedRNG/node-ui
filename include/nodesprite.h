@@ -17,6 +17,7 @@
 
 #pragma once
 
+#include <cmath>
 #include <algorithm>
 #include <vector>
 
@@ -54,6 +55,7 @@ class NodeSprite {
     std::pair<int, int> _position;
   private:
     void drawOverlay(QPainter& painter);
+    void drawIcons(QPainter& painter);
     
     static std::unique_ptr<QPixmap> unselected;
     QPixmap current;

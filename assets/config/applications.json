@@ -3,11 +3,26 @@
 	[{
 		"command": "chromium",
 		"icon": "chromium",
-		"path": [[1, 1], [1, 2], [2, 2]]
+		"path": [[1, 1], [1, 2], [2, 2], [1, 2]]
 	},
 	{
 		"command": "libreoffice --writer",
 		"icon": "libreoffice-writer",
-		"path": [[1, 1], [1, 2], [0, 2]]
+		"path": [[1, 1], [1, 2], [0, 2], [1, 2], [0, 2]]
+	},
+	{
+		"command": "midori",
+		"icon": "midori",
+		"path": [[1, 1], [1, 2], [0, 2], [1, 2], [2, 2]]
+	},
+	{
+		"command": "libreoffice --calc",
+		"icon": "libreoffice-calc",
+		"path": [[1, 1], [1, 2], [0, 2], [0, 1], [0, 0]]
+	},
+	{
+		"command": "eclipse",
+		"icon": "eclipse",
+		"path": [[1, 1], [1, 2], [0, 2], [0, 1], [1, 1]]
 	}]
 }

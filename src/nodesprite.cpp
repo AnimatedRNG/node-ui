@@ -80,11 +80,7 @@ void NodeSprite::render(const util::WindowProperties& winprops,
                         this->_position.first, this->_position.second,
                         size.first, size.second, &frame, 4, 10);
     this->drawOverlay(painter);
-    
-    if (icons.size() > 0)
-        util::renderQTImage(painter, icons[0]->pixmap(QSize(size.first, size.second)),
-                            this->_position.first, this->_position.second,
-                            size.first, size.second, NULL, 1, 1);
+    this->drawIcons(painter);
 }
 
 std::pair<double, double> NodeSprite::getIdealSize(const util::WindowProperties&
@@ -102,4 +98,56 @@ void NodeSprite::drawOverlay(QPainter& painter) {
     QRectF idealRect = QRectF(this->_position.first, this->_position.second,
                               size.first, size.second);
     painter.drawEllipse(idealRect);
+}
+
+void NodeSprite::drawIcons(QPainter& painter) {
+    auto renderIcon =
+    [&](std::shared_ptr<QIcon> icon, int x, int y, int width, int height) {
+        util::renderQTImage(painter, icon->pixmap(QSize(width, height)), x, y, width,
+                            height, NULL, 1, 1);
+    };
+    
+    // Avoid expensive stitching operations if we can
+    if (icons.size() == 1) {
+        renderIcon(icons[0], this->_position.first, this->_position.second, size.first,
+                   size.second);
+        return;
+    }
+    
+    if (icons.size() <= 1)
+        return;
+        
+    // Resizes icons to fit in area
+    int numIcons = icons.size();
+    int order = ((int) ceil(log2((double) numIcons)));
+    int dx, dy, offset_x, offset_y;
+    
+    int size_x, size_y;
+    
+    if (order % 2 == 0) {
+        size_x = size.first / (order);
+        size_y = size.second / (order);
+        dx = size.first / order;
+        dy = size.second / order;
+        offset_x = 0;
+        offset_y = 0;
+    } else {
+        size_x = size.first / (order + 1);
+        size_y = size.second / (order + 1);
+        dx = size.first / (order + 1);
+        dy = size.second / order;
+        offset_x = 0;
+        offset_y = size_y / (order + 1);
+    }
+    
+    int index = 0;
+    for (int y = offset_y; y < size.first; y += dy) {
+        for (int x = offset_x; x < size.second; x += dx) {
+            if (index < numIcons) {
+                renderIcon(icons[index], this->_position.first + x,
+                           this->_position.second + y, size_x, size_y);
+            }
+            index += 1;
+        }
+    }
 }
