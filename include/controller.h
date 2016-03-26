@@ -59,6 +59,10 @@ class Controller {
     
     void updateView();
     
+    void hideAll();
+    void showAll();
+    void toggleOverlay();
+    
     friend void onReceive(std::string str, Controller* controller);
   private:
     void loadIcons();

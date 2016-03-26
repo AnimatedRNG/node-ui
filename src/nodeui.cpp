@@ -25,6 +25,8 @@
 #include "controller.h"
 #include "hotkey.h"
 
+Controller* controller;
+
 Controller* createUIOverlay() {
     Config::readConfig();
     auto apps = Config::readApplications();
@@ -32,16 +34,22 @@ Controller* createUIOverlay() {
     // TODO: Fix odd memory corruption that happens around here on rare occasions
     std::shared_ptr<UIOverlay> screen(new UIOverlay);
     std::shared_ptr<Model> model(new Model(apps));
-    Controller* controller = new Controller(model, screen);
+    controller = new Controller(model, screen);
     screen->show();
     screen->start();
     return controller;
 }
 
+void onHotkeyPress() {
+    controller->toggleOverlay();
+}
+
 int main(int argc, char* argv[]) {
     QApplication app(argc, argv);
     Controller* controller = createUIOverlay();
+    HotKey::configureHotkey(SUPER_LEFT, 0, onHotkeyPress);
     int result = app.exec();
     UIOverlay::terminate();
+    HotKey::dispose();
     return result;
 }

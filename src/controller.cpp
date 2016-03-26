@@ -42,6 +42,27 @@ void Controller::updateView() {
     this->screen->highlightNode(*(path->end() - 1));
 }
 
+void Controller::hideAll() {
+    this->screen->hide();
+    this->model->reset();
+    this->screen->deselectAllNodes();
+    this->screen->resetAllNodeIcons();
+}
+
+void Controller::showAll() {
+    this->screen->show();
+    this->screen->activateWindow();
+    this->updateView();
+    this->loadIcons();
+}
+
+void Controller::toggleOverlay() {
+    if (this->screen->isVisible())
+        this->hideAll();
+    else
+        this->showAll();
+}
+
 void Controller::loadIcons() {
     this->screen->resetAllNodeIcons();
     std::vector<std::string> directions =
