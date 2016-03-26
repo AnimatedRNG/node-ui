@@ -21,9 +21,7 @@ void util::renderQTImage(QPainter& painter, QPixmap image, int x, int y,
                          int width, int height, int* frame,
                          int frame_num,
                          int frame_delay) {
-    if (frame == NULL)
-        return;
-    else
+    if (frame != NULL)
         *frame = (*frame + 1) % (frame_num * frame_delay);
         
     QRectF dst(x, y, image.width(), image.height());
@@ -33,7 +31,13 @@ void util::renderQTImage(QPainter& painter, QPixmap image, int x, int y,
     }
     
     int w = image.width() / frame_num;
-    QRectF src(w * (*frame / frame_delay), 0, w, image.height());
+    int f;
+    if (frame == NULL)
+        f = 0;
+    else
+        f = *frame;
+        
+    QRectF src(w * (f / frame_delay), 0, w, image.height());
     
     painter.drawPixmap(dst, image, src);
 }

@@ -53,6 +53,7 @@ class Controller {
         };
         
         this->screen->setController(signalAll);
+        this->loadIcons();
         this->updateView();
     }
     
@@ -60,6 +61,8 @@ class Controller {
     
     friend void onReceive(std::string str, Controller* controller);
   private:
+    void loadIcons();
+    
     std::shared_ptr<Model> model;
     std::shared_ptr<Screen> screen;
     

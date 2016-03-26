@@ -25,14 +25,12 @@
 #include "controller.h"
 
 Controller* createScreen() {
-    std::vector<Model::command_position> paths;
-    paths.push_back(std::make_pair(util::Command {"Example"}, util::vec2i{ {1, 1}, {1, 2}, {2, 2} }));
-    paths.push_back(std::make_pair(util::Command {"Example2"}, util::vec2i{ {1, 1}, {1, 0}, {0, 0} }));
-    paths.push_back(std::make_pair(util::Command {"Example3"}, util::vec2i{ {1, 1}, {1, 0}, {2, 0} }));
+    Config::readConfig();
+    auto apps = Config::readApplications();
     
+    // TODO: Fix odd memory corruption that happens around here on rare occasions
     std::shared_ptr<Screen> screen(new Screen);
-    std::shared_ptr<Model> model(new Model(
-                                     std::make_shared<std::vector<Model::command_position>>(paths)));
+    std::shared_ptr<Model> model(new Model(apps));
     Controller* controller = new Controller(model, screen);
     screen->show();
     screen->start();
@@ -41,7 +39,6 @@ Controller* createScreen() {
 
 int main(int argc, char* argv[]) {
     QApplication app(argc, argv);
-    Config::readConfig();
     Controller* controller = createScreen();
     int result = app.exec();
     Screen::terminate();

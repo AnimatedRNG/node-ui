@@ -100,6 +100,9 @@ class Model {
     std::shared_ptr<std::vector<util::Command>> getCommandsInDirection(
                 const std::string& direction) const;
                 
+    // Gets viable directions to move next
+    std::shared_ptr<std::vector<std::string>> getViableDirections() const;
+    
     // Returns the path of nodes that have been selected
     std::shared_ptr<util::vec2i> getPath() const;
   private:

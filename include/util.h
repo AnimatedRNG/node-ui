@@ -64,6 +64,7 @@ namespace util {
     
     struct Command {
         std::string name;
+        std::shared_ptr<QIcon> icon;
     };
     
     inline std::ostream& operator<<(std::ostream& strm, Command const& command) {

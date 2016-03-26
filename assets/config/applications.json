@@ -1,0 +1,13 @@
+{
+	"applications": 
+	[{
+		"command": "chromium",
+		"icon": "chromium",
+		"path": [[1, 1], [1, 2], [2, 2]]
+	},
+	{
+		"command": "libreoffice --writer",
+		"icon": "libreoffice-writer",
+		"path": [[1, 1], [1, 2], [0, 2]]
+	}]
+}

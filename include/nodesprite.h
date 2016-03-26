@@ -18,9 +18,11 @@
 #pragma once
 
 #include <algorithm>
+#include <vector>
 
 #include <QImage>
 #include <QColor>
+#include <QIcon>
 #include <QPainter>
 
 #include "util.h"
@@ -40,6 +42,8 @@ class NodeSprite {
     void unselect();
     void highlight();
     
+    void setIcons(const std::vector<std::shared_ptr<QIcon>>& icons);
+    
     void render(const util::WindowProperties& winprops, QPainter& painter);
     
     static constexpr double NODE_WIDTH = 0.1;
@@ -56,6 +60,8 @@ class NodeSprite {
     std::pair<int, int> size;
     
     static bool initialized;
+    
+    std::vector<std::shared_ptr<QIcon>> icons;
     
     int frame;
     uint8_t tint[3];

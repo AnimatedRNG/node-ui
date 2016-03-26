@@ -21,12 +21,30 @@
 void onReceive(std::string str, Controller* controller) {
     DEBUG(str);
     controller->model = controller->model->select(str);
+    
+    controller->loadIcons();
+    
     controller->updateView();
 }
 
 void Controller::updateView() {
-    auto path = * (this->model->getPath());
-    for (auto& node : path)
-        this->screen->selectNode(node);
-    this->screen->highlightNode(*(path.end() - 1));
+    auto path = this->model->getPath();
+    for (auto it = path->begin(); it != path->end(); it++)
+        this->screen->selectNode(*it);
+    this->screen->highlightNode(*(path->end() - 1));
+}
+
+void Controller::loadIcons() {
+    this->screen->resetAllNodeIcons();
+    std::vector<std::string> directions =
+        * (this->model->getViableDirections());
+    for (auto direction : directions) {
+        auto possibilities = * (this->model->getCommandsInDirection(direction));
+        std::pair<int, int> currentPosition = this->model->getCurrentPosition()
+                                              + getDelta(direction);
+        std::vector<std::shared_ptr<QIcon>> icons;
+        for (auto& possibility : possibilities)
+            icons.push_back(possibility.icon);
+        this->screen->setNodeIcons(currentPosition, icons);
+    }
 }

@@ -52,6 +52,10 @@ class Screen : public QWidget {
     void deselectNode(const std::pair<int, int>& position);
     void highlightNode(const std::pair<int, int>& position);
     
+    void setNodeIcons(const std::pair<int, int>& position,
+                      const std::vector<std::shared_ptr<QIcon>>& icons);
+    void resetAllNodeIcons();
+    
     std::pair<int, int> getResolution();
     
     static constexpr const char* WINDOW_NAME = "NodeUI";

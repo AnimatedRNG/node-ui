@@ -120,6 +120,17 @@ void Screen::highlightNode(const std::pair<int, int>& position) {
     this->nodesprites.at(position)->highlight();
 }
 
+void Screen::setNodeIcons(const std::pair<int, int>& position,
+                          const std::vector<std::shared_ptr<QIcon>>& icons) {
+    this->nodesprites.at(position)->setIcons(icons);
+}
+
+void Screen::resetAllNodeIcons() {
+    std::vector<std::shared_ptr<QIcon>> empty;
+    for (auto nodesprite : this->nodesprites)
+        nodesprite.second->setIcons(empty);
+}
+
 std::pair<int, int> Screen::getResolution() {
     return std::make_pair(this->properties.width, this->properties.height);
 }

@@ -61,6 +61,15 @@ const std::string& direction) const {
     return commands;
 }
 
+std::shared_ptr<std::vector<std::string>> Model::getViableDirections() const {
+    std::vector<std::string> possibilities;
+    
+    for (auto& map : this->currentNode->children)
+        possibilities.push_back(map.first);
+        
+    return std::make_shared<std::vector<std::string>>(possibilities);
+}
+
 std::shared_ptr<util::vec2i> Model::getPath() const {
     Node<util::Command>::node_ptr curr = this->currentNode;
     std::pair<int, int> currPos = this->currentPosition;

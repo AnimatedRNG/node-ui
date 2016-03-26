@@ -29,6 +29,7 @@ NodeSprite::NodeSprite(const std::pair<int, int>& position,
     _position(position),
     frame(rand() % NodeSprite::NUM_FRAMES),
     size(),
+    icons(),
     tint {255, 255, 255} {
     if (!initialized) {
         try {
@@ -69,12 +70,21 @@ void NodeSprite::highlight() {
     memcpy(&(this->tint), &highlighted, 3 * sizeof(int));
 }
 
+void NodeSprite::setIcons(const std::vector<std::shared_ptr<QIcon>>& icons) {
+    this->icons = icons;
+}
+
 void NodeSprite::render(const util::WindowProperties& winprops,
                         QPainter& painter) {
     util::renderQTImage(painter, current,
                         this->_position.first, this->_position.second,
                         size.first, size.second, &frame, 4, 10);
     this->drawOverlay(painter);
+    
+    if (icons.size() > 0)
+        util::renderQTImage(painter, icons[0]->pixmap(QSize(size.first, size.second)),
+                            this->_position.first, this->_position.second,
+                            size.first, size.second, NULL, 1, 1);
 }
 
 std::pair<double, double> NodeSprite::getIdealSize(const util::WindowProperties&

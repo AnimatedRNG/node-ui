@@ -17,27 +17,79 @@
 
 #pragma once
 
-#include <istream>
+#include <string>
 #include <fstream>
+#include <streambuf>
+
+#include <QIcon>
+#include <QString>
 
 #include <json/config.h>
 #include <json/value.h>
 #include <json/reader.h>
 
 #include "util.h"
+#include "model.h"
 
 namespace Config {
 
     static std::shared_ptr<Json::Value> root;
     
+    std::string readFile(const std::string& filename) {
+        std::ifstream filestream(filename);
+        return std::string((std::istreambuf_iterator<char>(filestream)),
+                           std::istreambuf_iterator<char>());
+    }
+    
     void readConfig() {
-        std::ifstream configFile;
-        configFile.open("assets/config.json");
-        
         root = std::shared_ptr<Json::Value>(new Json::Value);
         
         Json::Reader reader;
-        if (!reader.parse((std::istream&) configFile, *root))
-            std::runtime_error("Config file is not valid JSON");
+        if (!reader.parse(readFile("assets/config/config.json"), *root))
+            throw std::runtime_error("Config file is not valid JSON");
+    }
+    
+    std::shared_ptr<std::vector<Model::command_position>> readApplications() {
+        auto output = std::shared_ptr<std::vector<Model::command_position>>(
+                          new std::vector<Model::command_position>);
+                          
+        Json::Value appRoot;
+        
+        Json::Reader reader;
+        std::string fileContents = readFile("assets/config/applications.json");
+        if (!reader.parse(fileContents, appRoot))
+            throw std::runtime_error("Application file is not valid JSON");
+            
+        const Json::Value applicationList = appRoot["applications"];
+        for (int index = 0; index < applicationList.size(); index++) {
+            const Json::Value entry = applicationList[index];
+            std::string name = entry["command"].asString();
+            QString iconName = QString::fromStdString(entry["icon"].asString());
+            
+            auto icon = std::make_shared<QIcon>(QIcon::fromTheme(iconName));
+            
+            util::vec2i pathValues;
+            const Json::Value commandPath = entry["path"];
+            for (int i = 0; i < entry.size(); i++) {
+                const Json::Value coordinate = commandPath[i];
+                std::string errorPrefix = "Path associated with command "
+                                          + entry["command"].asString();
+                if (coordinate.size() != 2)
+                    throw std::runtime_error(errorPrefix
+                                             + " does " + "not have the" +
+                                             " correct number" + " of coordinates");
+                if (!coordinate[0].isInt() || !coordinate[1].isInt())
+                    throw std::runtime_error(errorPrefix + " does not have valid "
+                                             + "coordinates");
+                std::pair<int, int> coord = {coordinate[0].asInt(),
+                                             coordinate[1].asInt()
+                                            };
+                pathValues.push_back(coord);
+            }
+            
+            Model::command_position pos = {util::Command({name, icon}), pathValues};
+            output->push_back(pos);
+        }
+        return output;
     }
 };
