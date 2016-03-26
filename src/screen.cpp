@@ -23,7 +23,7 @@
 #include "util.h"
 #include "screen.h"
 
-Screen::Screen(QWidget* parent) :
+UIOverlay::UIOverlay(QWidget* parent) :
     QWidget(parent),
     properties {0, 0},
     nodesprites() {
@@ -63,21 +63,21 @@ Screen::Screen(QWidget* parent) :
     }
 }
 
-Screen::~Screen() {
+UIOverlay::~UIOverlay() {
     // I guess QT does all our work now?
 }
 
-void Screen::timerEvent(QTimerEvent* event) {
+void UIOverlay::timerEvent(QTimerEvent* event) {
     Q_UNUSED(event);
     repaint();
 }
 
-void Screen::keyPressEvent(QKeyEvent* event) {
+void UIOverlay::keyPressEvent(QKeyEvent* event) {
     if (this->controller != nullptr)
         this->controller(event);
 }
 
-void Screen::paintEvent(QPaintEvent* event) {
+void UIOverlay::paintEvent(QPaintEvent* event) {
     Q_UNUSED(event);
     QPainter qp(this);
     
@@ -87,60 +87,60 @@ void Screen::paintEvent(QPaintEvent* event) {
         std::exception_ptr p = std::current_exception();
         std::clog << (p ? p.__cxa_exception_type() -> name() : "null") << std::endl;
         
-        Screen::terminate();
+        UIOverlay::terminate();
     }
 }
 
-void Screen::closeEvent(QCloseEvent* event) {
+void UIOverlay::closeEvent(QCloseEvent* event) {
     QApplication::quit();
 }
 
-void Screen::setController(std::function<void(QKeyEvent*)> controller) {
+void UIOverlay::setController(std::function<void(QKeyEvent*)> controller) {
     this->controller = controller;
 }
 
-void Screen::start() {
-    timerID = startTimer(1000 / Screen::FRAMERATE);
+void UIOverlay::start() {
+    timerID = startTimer(1000 / UIOverlay::FRAMERATE);
 }
 
-void Screen::terminate() {
+void UIOverlay::terminate() {
     std::cout << "Destroying assets" << std::endl;
     NodeSprite::destroyAssets();
 }
 
-void Screen::selectNode(const std::pair<int, int>& position) {
+void UIOverlay::selectNode(const std::pair<int, int>& position) {
     this->nodesprites.at(position)->select();
 }
 
-void Screen::deselectNode(const std::pair<int, int>& position) {
+void UIOverlay::deselectNode(const std::pair<int, int>& position) {
     this->nodesprites.at(position)->unselect();
 }
 
-void Screen::highlightNode(const std::pair<int, int>& position) {
+void UIOverlay::highlightNode(const std::pair<int, int>& position) {
     this->nodesprites.at(position)->highlight();
 }
 
-void Screen::setNodeIcons(const std::pair<int, int>& position,
-                          const std::vector<std::shared_ptr<QIcon>>& icons) {
+void UIOverlay::setNodeIcons(const std::pair<int, int>& position,
+                             const std::vector<std::shared_ptr<QIcon>>& icons) {
     this->nodesprites.at(position)->setIcons(icons);
 }
 
-void Screen::deselectAllNodes() {
+void UIOverlay::deselectAllNodes() {
     for (auto nodesprite : this->nodesprites)
         nodesprite.second->unselect();
 }
 
-void Screen::resetAllNodeIcons() {
+void UIOverlay::resetAllNodeIcons() {
     std::vector<std::shared_ptr<QIcon>> empty;
     for (auto nodesprite : this->nodesprites)
         nodesprite.second->setIcons(empty);
 }
 
-std::pair<int, int> Screen::getResolution() {
+std::pair<int, int> UIOverlay::getResolution() {
     return std::make_pair(this->properties.width, this->properties.height);
 }
 
-void Screen::render(QPainter& painter) {
+void UIOverlay::render(QPainter& painter) {
     for (auto& map : this->nodesprites)
         map.second->render(this->properties, painter);
 }

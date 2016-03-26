@@ -23,13 +23,14 @@
 #include "screen.h"
 #include "model.h"
 #include "controller.h"
+#include "hotkey.h"
 
-Controller* createScreen() {
+Controller* createUIOverlay() {
     Config::readConfig();
     auto apps = Config::readApplications();
     
     // TODO: Fix odd memory corruption that happens around here on rare occasions
-    std::shared_ptr<Screen> screen(new Screen);
+    std::shared_ptr<UIOverlay> screen(new UIOverlay);
     std::shared_ptr<Model> model(new Model(apps));
     Controller* controller = new Controller(model, screen);
     screen->show();
@@ -39,8 +40,8 @@ Controller* createScreen() {
 
 int main(int argc, char* argv[]) {
     QApplication app(argc, argv);
-    Controller* controller = createScreen();
+    Controller* controller = createUIOverlay();
     int result = app.exec();
-    Screen::terminate();
+    UIOverlay::terminate();
     return result;
 }

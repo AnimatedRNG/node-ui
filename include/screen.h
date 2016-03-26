@@ -29,18 +29,18 @@
 #include "util.h"
 #include "nodesprite.h"
 
-class Screen : public QWidget {
+class UIOverlay : public QWidget {
 
     Q_OBJECT
     
   public:
-    Screen(QWidget* parent = 0);
-    Screen(Screen&&) =
+    UIOverlay(QWidget* parent = 0);
+    UIOverlay(UIOverlay&&) =
         default;                                                                            // Move constructor
-    ~Screen();                                                                              // Destructor
-    Screen& operator= (const Screen&)& =
+    ~UIOverlay();                                                                              // Destructor
+    UIOverlay& operator= (const UIOverlay&)& =
         default;                                                                            // Copy assignment operator
-    Screen& operator= (Screen&&)& =
+    UIOverlay& operator= (UIOverlay&&)& =
         default;                                                                            // Move assignment operator
         
     void setController(std::function<void(QKeyEvent*)> controller);

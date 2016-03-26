@@ -35,7 +35,7 @@ void onReceive(std::string str, void* controller);
 
 class Controller {
   public:
-    Controller(std::shared_ptr<Model> model, std::shared_ptr<Screen> screen) :
+    Controller(std::shared_ptr<Model> model, std::shared_ptr<UIOverlay> screen) :
         inputDevices() {
         this->model = model;
         this->screen = screen;
@@ -64,7 +64,7 @@ class Controller {
     void loadIcons();
     
     std::shared_ptr<Model> model;
-    std::shared_ptr<Screen> screen;
+    std::shared_ptr<UIOverlay> screen;
     
     std::vector<std::shared_ptr<InputDevice>> inputDevices;
 };
