@@ -125,6 +125,11 @@ void Screen::setNodeIcons(const std::pair<int, int>& position,
     this->nodesprites.at(position)->setIcons(icons);
 }
 
+void Screen::deselectAllNodes() {
+    for (auto nodesprite : this->nodesprites)
+        nodesprite.second->unselect();
+}
+
 void Screen::resetAllNodeIcons() {
     std::vector<std::shared_ptr<QIcon>> empty;
     for (auto nodesprite : this->nodesprites)

@@ -54,6 +54,7 @@ class Screen : public QWidget {
     
     void setNodeIcons(const std::pair<int, int>& position,
                       const std::vector<std::shared_ptr<QIcon>>& icons);
+    void deselectAllNodes();
     void resetAllNodeIcons();
     
     std::pair<int, int> getResolution();

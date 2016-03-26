@@ -105,6 +105,9 @@ class Model {
     
     // Returns the path of nodes that have been selected
     std::shared_ptr<util::vec2i> getPath() const;
+    
+    // Resets the model to its default state
+    void reset();
   private:
     std::shared_ptr<Node<util::Command>> currentNode;
     std::pair<int, int> currentPosition;

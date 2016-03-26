@@ -22,12 +22,20 @@ void onReceive(std::string str, Controller* controller) {
     DEBUG(str);
     controller->model = controller->model->select(str);
     
+    auto command = controller->model->getCommand();
+    if (command != nullptr) {
+        util::executeCommand(command->name);
+        controller->model->reset();
+        controller->screen->hide();
+    }
+    
     controller->loadIcons();
     
     controller->updateView();
 }
 
 void Controller::updateView() {
+    this->screen->deselectAllNodes();
     auto path = this->model->getPath();
     for (auto it = path->begin(); it != path->end(); it++)
         this->screen->selectNode(*it);

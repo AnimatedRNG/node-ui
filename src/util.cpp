@@ -48,3 +48,8 @@ std::pair<int, int> util::toScreenCoords(const WindowProperties& props,
     
     return std::pair<int, int> { resolution.first * coords.first, resolution.second * coords.second };
 }
+
+void util::executeCommand(std::string command) {
+    QProcess sh;
+    sh.startDetached(QString::fromStdString(command));
+}

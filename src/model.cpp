@@ -41,7 +41,7 @@ std::shared_ptr<util::Command> Model::getCommand() const {
     if (this->currentNode->isLeaf())
         return this->currentNode->data;
     else
-        throw std::runtime_error("Model's current node is not a leaf!");
+        return nullptr;
 }
 
 std::shared_ptr<std::vector<util::Command>> Model::getCommandsInDirection(
@@ -100,4 +100,12 @@ std::shared_ptr<util::vec2i> Model::getPath() const {
     // Path is currently in reverse
     std::reverse(path.begin(), path.end());
     return std::make_shared<util::vec2i>(path);
+}
+
+void Model::reset() {
+    auto curr = this->currentNode;
+    while (curr->parent != nullptr)
+        curr = curr->parent;
+    this->currentNode = curr;
+    this->currentPosition = this->getRootPosition();
 }

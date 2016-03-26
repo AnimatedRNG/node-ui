@@ -33,6 +33,7 @@
 #include <string.h>
 
 #include <QApplication>
+#include <QProcess>
 #include <QKeyEvent>
 #include <QWidget>
 #include <QPainter>
@@ -78,6 +79,8 @@ namespace util {
                        
     std::pair<int, int> toScreenCoords(const WindowProperties& props,
                                        std::pair<double, double> coords);
+                                       
+    void executeCommand(std::string command);
 }
 
 // Defined int pair addition
