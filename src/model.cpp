@@ -29,6 +29,24 @@ std::shared_ptr<Model> Model::select(const std::string& direction) const {
                                              this->getCurrentPosition()));
 }
 
+std::shared_ptr<Model> Model::selectParent() const {
+    if (this->currentNode->parent != nullptr) {
+        std::shared_ptr<Node<util::Command>> parent = this->currentNode->parent;
+        std::pair<int, int> delta;
+        auto unpackedChildren = *(currentNode->parent->unpack());
+        for (auto& map : unpackedChildren) {
+            if (map.second->ID == this->currentNode->ID) {
+                delta = getDelta(map.first);
+                break;
+            }
+        }
+        return std::make_shared<Model>(Model(parent,
+                                             this->getCurrentPosition() - delta));
+    } else
+        return std::make_shared<Model>(Model(this->currentNode,
+                                             this->getCurrentPosition()));
+}
+
 std::pair<int, int> Model::getRootPosition() const {
     return {util::GRID_WIDTH / 2, util::GRID_HEIGHT / 2};
 }

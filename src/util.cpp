@@ -51,5 +51,6 @@ std::pair<int, int> util::toScreenCoords(const WindowProperties& props,
 
 void util::executeCommand(std::string command) {
     QProcess sh;
+    sh.setWorkingDirectory("~/");
     sh.startDetached(QString::fromStdString(command));
 }

@@ -24,7 +24,12 @@ void onReceive(std::string str, Controller* controller) {
         controller->hideAll();
         return;
     }
-    controller->model = controller->model->select(str);
+    
+    if (str == "BACK") {
+        controller->model = controller->model->selectParent();
+    } else {
+        controller->model = controller->model->select(str);
+    }
     
     auto command = controller->model->getCommand();
     if (command != nullptr) {

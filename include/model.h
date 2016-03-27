@@ -85,6 +85,9 @@ class Model {
     // Returns Model if valid, otherwise nulltpr
     std::shared_ptr<Model> select(const std::string& direction) const;
     
+    // Goes one level up the tree
+    std::shared_ptr<Model> selectParent() const;
+    
     // Gets the position of the root node
     std::pair<int, int> getRootPosition() const;
     
