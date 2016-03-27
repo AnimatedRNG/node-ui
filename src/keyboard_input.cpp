@@ -45,5 +45,8 @@ void KeyboardInput::onKeyEvent(QKeyEvent* event) {
         case Qt::Key_N:
             emitFunction("dr");
             break;
+        case Qt::Key_Escape:
+            emitFunction("EXIT");
+            break;
     }
 }

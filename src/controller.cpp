@@ -20,13 +20,15 @@
 
 void onReceive(std::string str, Controller* controller) {
     DEBUG(str);
+    if (str == "EXIT") {
+        controller->hideAll();
+        return;
+    }
     controller->model = controller->model->select(str);
     
     auto command = controller->model->getCommand();
     if (command != nullptr) {
         util::executeCommand(command->name);
-        //controller->model->reset();
-        //controller->screen->hide();
         controller->hideAll();
     }
     
