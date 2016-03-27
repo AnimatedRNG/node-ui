@@ -48,7 +48,8 @@ int main(int argc, char* argv[]) {
     Controller* controller = createUIOverlay();
     int hotkey = XStringToKeysym((*(Config::root))["hotkey"].
                                  asString().c_str());
-    HotKey::configureHotkey(hotkey, 0, onHotkeyPress);
+    int modifier = (*(Config::root))["hotkey_modifier"].asInt();
+    HotKey::configureHotkey(hotkey, modifier, onHotkeyPress);
     int result = app.exec();
     UIOverlay::terminate();
     HotKey::dispose();
