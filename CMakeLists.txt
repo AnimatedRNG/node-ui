@@ -23,7 +23,7 @@ find_package(Jsoncpp REQUIRED)
 # Later I'll try to find a workaround.
 find_package(XLib REQUIRED)
 
-set(SRC_FILES src/util.cpp src/model.cpp src/screen.cpp src/controller.cpp src/keyboard_input.cpp src/nodesprite.cpp)
+set(SRC_FILES src/util.cpp src/config.cpp src/model.cpp src/screen.cpp src/controller.cpp src/keyboard_input.cpp src/nodesprite.cpp)
 
 set(DEFINITIONS ${Qt5Widgets_DEFINITIONS} ${Qt5Core_DEFINITIONS} ${Qt5Gui_DEFINITIONS})
 add_definitions(${DEFINITIONS})

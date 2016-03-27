@@ -46,7 +46,9 @@ void onHotkeyPress() {
 int main(int argc, char* argv[]) {
     QApplication app(argc, argv);
     Controller* controller = createUIOverlay();
-    HotKey::configureHotkey(SUPER_LEFT, 0, onHotkeyPress);
+    int hotkey = XStringToKeysym((*(Config::root))["hotkey"].
+                                 asString().c_str());
+    HotKey::configureHotkey(hotkey, 0, onHotkeyPress);
     int result = app.exec();
     UIOverlay::terminate();
     HotKey::dispose();

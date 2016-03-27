@@ -68,6 +68,15 @@ namespace util {
         std::shared_ptr<QIcon> icon;
     };
     
+    static std::unordered_map<int, std::string> keyToString = {
+        {Qt::Key_Up, "Up"},
+        {Qt::Key_Down, "Down"},
+        {Qt::Key_Left, "Left"},
+        {Qt::Key_Right, "Right"},
+        {Qt::Key_Backspace, "Backspace"},
+        {Qt::Key_Escape, "Escape"},
+    };
+    
     inline std::ostream& operator<<(std::ostream& strm, Command const& command) {
         return strm << command.name;
     }

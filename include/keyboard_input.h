@@ -22,6 +22,10 @@
 #include <algorithm>
 #include <vector>
 
+#include <json/value.h>
+
+#include <QKeyEvent>
+
 #include "input_device.h"
 #include "util.h"
 #include "model.h"

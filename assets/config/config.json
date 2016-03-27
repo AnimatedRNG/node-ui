@@ -1,3 +1,29 @@
 {
-	"testKey": "testValue"
+	/*
+	*	u_		Up
+	*	ur		Up Right
+	*	ul		Up Left
+	*	l_		Left
+	*	d_		Down
+	*	dr		Down Right
+	*	dl		Down Left
+	*	r_		Right
+	*	BACK	Go back
+	*	EXIT	Close launcher
+	*/
+	"keys": {
+		"u_": ["k", "Up", "8", "w"],
+		"ur": ["u", "9"],
+		"ul": ["y", "7"],
+		"l_": ["h", "Left", "4", "a"],
+		"d_": ["j", "Down", "2", "s"],
+		"dr": ["n", "3"],
+		"dl": ["b", "1"],
+		"r_": ["l", "Right", "6", "d"],
+		"BACK": ["Backspace"],
+		"EXIT": ["Escape"]
+	},
+	
+	// The following hotkey is an XLib keysym
+	"hotkey": "Super_L"
 }

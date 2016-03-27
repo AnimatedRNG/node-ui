@@ -17,39 +17,45 @@
 
 #include "keyboard_input.h"
 
+#include "config.h"
+
 void KeyboardInput::onKeyEvent(QKeyEvent* event) {
     int key = event->key();
     
-    switch (key) {
-        case Qt::Key_H:
-            emitFunction("l_");
-            break;
-        case Qt::Key_J:
-            emitFunction("d_");
-            break;
-        case Qt::Key_K:
-            emitFunction("u_");
-            break;
-        case Qt::Key_L:
-            emitFunction("r_");
-            break;
-        case Qt::Key_Y:
-            emitFunction("ul");
-            break;
-        case Qt::Key_U:
-            emitFunction("ur");
-            break;
-        case Qt::Key_B:
-            emitFunction("dl");
-            break;
-        case Qt::Key_N:
-            emitFunction("dr");
-            break;
-        case Qt::Key_Backspace:
-            emitFunction("BACK");
-            break;
-        case Qt::Key_Escape:
-            emitFunction("EXIT");
-            break;
-    }
+    auto checkIfKeyMatches = [](QKeyEvent * ev, std::string command,
+    const Json::Value & keys) {
+        const Json::Value listing = keys[command];
+        for (int i = 0; i < keys.size(); i++) {
+            // Either Qt can create a string representation of the keypress
+            // or we need to check it against the key->string map
+            if ((ev->text() != QString() &&
+                    QString::fromStdString(listing[i].asString()) == ev->text()
+                    || (util::keyToString.count(ev->key()) > 0 &&
+                        util::keyToString.at(ev->key()) == listing[i].asString())))
+                return true;
+        }
+        return false;
+    };
+    
+    const Json::Value keys = (*(Config::root))["keys"];
+    if (checkIfKeyMatches(event, "l_", keys))
+        emitFunction("l_");
+    else if (checkIfKeyMatches(event, "d_", keys))
+        emitFunction("d_");
+    else if (checkIfKeyMatches(event, "u_", keys))
+        emitFunction("u_");
+    else if (checkIfKeyMatches(event, "r_", keys))
+        emitFunction("r_");
+    else if (checkIfKeyMatches(event, "ul", keys))
+        emitFunction("ul");
+    else if (checkIfKeyMatches(event, "ur", keys))
+        emitFunction("ur");
+    else if (checkIfKeyMatches(event, "dl", keys))
+        emitFunction("dl");
+    else if (checkIfKeyMatches(event, "dr", keys))
+        emitFunction("dr");
+    else if (checkIfKeyMatches(event, "BACK", keys))
+        emitFunction("BACK");
+    else if (checkIfKeyMatches(event, "EXIT", keys))
+        emitFunction("EXIT");
 }
