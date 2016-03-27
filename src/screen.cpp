@@ -92,7 +92,16 @@ void UIOverlay::paintEvent(QPaintEvent* event) {
 }
 
 void UIOverlay::closeEvent(QCloseEvent* event) {
+    Q_UNUSED(event);
     QApplication::quit();
+}
+
+void UIOverlay::changeEvent(QEvent* event) {
+    if (!this->isActiveWindow()) {
+        QKeyEvent* e = new QKeyEvent(QEvent::KeyPress, Qt::Key_Escape,
+                                     Qt::NoModifier, QString());
+        QApplication::sendEvent(this, e);
+    }
 }
 
 void UIOverlay::setController(std::function<void(QKeyEvent*)> controller) {

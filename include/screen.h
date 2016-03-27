@@ -22,6 +22,7 @@
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QKeyEvent>
+#include <QEvent>
 #include <QWidget>
 #include <QPainter>
 #include <QTime>
@@ -75,6 +76,8 @@ class UIOverlay : public QWidget {
     void keyPressEvent(QKeyEvent* event);
     void paintEvent(QPaintEvent* event);
     void closeEvent(QCloseEvent* event);
+    
+    void changeEvent(QEvent* event);
   private:
     void render(QPainter& painter);
     
