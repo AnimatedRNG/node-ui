@@ -25,8 +25,9 @@ void onReceive(std::string str, Controller* controller) {
     auto command = controller->model->getCommand();
     if (command != nullptr) {
         util::executeCommand(command->name);
-        controller->model->reset();
-        controller->screen->hide();
+        //controller->model->reset();
+        //controller->screen->hide();
+        controller->hideAll();
     }
     
     controller->loadIcons();
