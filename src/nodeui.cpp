@@ -35,7 +35,6 @@ Controller* createUIOverlay() {
     std::shared_ptr<UIOverlay> screen(new UIOverlay);
     std::shared_ptr<Model> model(new Model(apps));
     controller = new Controller(model, screen);
-    screen->show();
     screen->start();
     return controller;
 }
