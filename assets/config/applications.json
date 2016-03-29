@@ -3,31 +3,91 @@
 	[{
 		"command": "chromium",
 		"icon": "chromium",
-		"path": [[1, 1], [2, 2]]
+		"path": [[1, 1], [1, 2]]
 	},
 	{
 		"command": "libreoffice --writer",
 		"icon": "libreoffice-writer",
-		"path": [[1, 1], [2, 1], [1, 2]]
+		"path": [[1, 1], [2, 1], [2, 2]]
+	},
+	{
+		"command": "libreoffice --calc",
+		"icon": "libreoffice-calc",
+		"path": [[1, 1], [2, 1], [2, 0]]
+	},
+	{
+		"command": "thunderbird",
+		"icon": "thunderbird",
+		"path": [[1, 1], [2, 1], [1, 1]]
+	},
+	{
+		"command": "gnome-screenshot -i",
+		"icon": "gnome-screenshot",
+		"path": [[1, 1], [2, 2], [2, 1], [2, 0]]
 	},
 	{
 		"command": "midori",
 		"icon": "midori",
-		"path": [[1, 1], [1, 2], [0, 2]]
+		"path": [[1, 1], [0, 2], [0, 1]]
+	},
+	{
+		"command": "firefox -private-window",
+		"icon": "firefox",
+		"path": [[1, 1], [0, 2], [1, 2]]
+	},
+	{
+		"command": "epiphany",
+		"icon": "web-browser",
+		"path": [[1, 1], [0, 2], [1, 1]]
 	},
 	{
 		"command": "gnome-calculator",
 		"icon": "accessories-calculator",
-		"path": [[1, 1], [1, 2], [0, 1]]
+		"path": [[1, 1], [2, 2], [2, 1], [1, 1]]
 	},
 	{
 		"command": "eclipse",
 		"icon": "eclipse",
-		"path": [[1, 1], [2, 1], [1, 1]]
+		"path": [[1, 1], [0, 1], [0, 2]]
 	},
 	{
 		"command": "gnome-terminal",
 		"icon": "utilities-terminal",
 		"path": [[1, 1], [1, 0]]
+	},
+	{
+		"command": "subl3",
+		"icon": "sublime-text",
+		"path": [[1, 1], [0, 1], [0, 0]]
+	},
+	{
+		"command": "nautilus",
+		"icon": "system-file-manager",
+		"path" : [[1, 1], [2, 0]]
+	},
+	{
+		"command": "vlc",
+		"icon": "vlc",
+		"path": [[1, 1], [0, 0], [1, 0]]
+	},
+	{
+		"command": "minitube",
+		"icon": "minitube",
+		"path": [[1, 1], [0, 0], [0, 1]]
+	},
+	{
+		"command": "emacs",
+		"icon": "emacs",
+		"path": [[1, 1], [0, 1], [1, 1]]
+	},
+	{
+		"command": "gimp-2.8",
+		"icon": "gimp",
+		"path": [[1, 1], [2, 2], [1, 2]]
+	},
+	{
+		"command": "inkscape",
+		"icon": "inkscape",
+		"path": [[1, 1], [2, 2], [1, 1]]
 	}]
 }

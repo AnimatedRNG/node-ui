@@ -27,6 +27,7 @@
 #include <QPainter>
 
 #include "util.h"
+#include "config.h"
 
 class NodeSprite {
   public:
@@ -66,5 +67,5 @@ class NodeSprite {
     std::vector<std::shared_ptr<QIcon>> icons;
     
     int frame;
-    uint8_t tint[3];
+    QColor tint;
 };

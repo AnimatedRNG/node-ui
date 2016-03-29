@@ -18,6 +18,7 @@
 #pragma once
 
 #include <unordered_map>
+#include <set>
 
 #include <QApplication>
 #include <QDesktopWidget>
@@ -28,6 +29,7 @@
 #include <QTime>
 
 #include "util.h"
+#include "config.h"
 #include "nodesprite.h"
 
 class UIOverlay : public QWidget {
@@ -35,6 +37,9 @@ class UIOverlay : public QWidget {
     Q_OBJECT
     
   public:
+    typedef std::pair<std::pair<int, int>,
+            std::pair<int, int>> coord_pair;
+            
     UIOverlay(QWidget* parent = 0);
     UIOverlay(UIOverlay&&) =
         default;                                                                            // Move constructor
@@ -52,7 +57,9 @@ class UIOverlay : public QWidget {
     void selectNode(const std::pair<int, int>& position);
     void deselectNode(const std::pair<int, int>& position);
     void highlightNode(const std::pair<int, int>& position);
-    
+    void drawPath(const std::pair<int, int>& startPosition,
+                  const std::pair<int, int>& endPosition);
+                  
     void setNodeIcons(const std::pair<int, int>& position,
                       const std::vector<std::shared_ptr<QIcon>>& icons);
     void deselectAllNodes();
@@ -86,4 +93,6 @@ class UIOverlay : public QWidget {
     
     std::unordered_map<std::pair<int, int>, std::shared_ptr<NodeSprite>, pairhash>
     nodesprites;
+    
+    std::set<coord_pair> pathOverlay;
 };

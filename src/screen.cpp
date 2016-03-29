@@ -26,6 +26,7 @@
 UIOverlay::UIOverlay(QWidget* parent) :
     QWidget(parent),
     properties {0, 0},
+    pathOverlay(),
     nodesprites() {
     
     srand(time(NULL));
@@ -129,6 +130,11 @@ void UIOverlay::highlightNode(const std::pair<int, int>& position) {
     this->nodesprites.at(position)->highlight();
 }
 
+void UIOverlay::drawPath(const std::pair<int, int>& startPosition,
+                         const std::pair<int, int>& endPosition) {
+    this->pathOverlay.insert(std::make_pair(startPosition, endPosition));
+}
+
 void UIOverlay::setNodeIcons(const std::pair<int, int>& position,
                              const std::vector<std::shared_ptr<QIcon>>& icons) {
     this->nodesprites.at(position)->setIcons(icons);
@@ -137,6 +143,7 @@ void UIOverlay::setNodeIcons(const std::pair<int, int>& position,
 void UIOverlay::deselectAllNodes() {
     for (auto nodesprite : this->nodesprites)
         nodesprite.second->unselect();
+    this->pathOverlay.clear();
 }
 
 void UIOverlay::resetAllNodeIcons() {
@@ -152,4 +159,23 @@ std::pair<int, int> UIOverlay::getResolution() {
 void UIOverlay::render(QPainter& painter) {
     for (auto& map : this->nodesprites)
         map.second->render(this->properties, painter);
+        
+    for (auto& pos : pathOverlay) {
+        const auto nsp0 = this->nodesprites.at(pos.first);
+        const auto nsp1 = this->nodesprites.at(pos.second);
+        const std::pair<int, int> offset0 = util::toScreenCoords(this->properties,
+                                            nsp0->getIdealSize(this->properties));
+        const std::pair<int, int> offset1 = util::toScreenCoords(this->properties,
+                                            nsp1->getIdealSize(this->properties));
+        const std::pair<int, int> position0 = nsp0->_position + std::make_pair(
+                offset0.first / 2, offset0.second / 2);
+        const std::pair<int, int> position1 = nsp1->_position + std::make_pair(
+                offset1.first / 2, offset1.second / 2);
+        painter.setRenderHint(QPainter::Antialiasing, true);
+        QPen pen(Config::getColor("line"));
+        pen.setWidth(20);
+        painter.setPen(pen);
+        painter.drawLine(QPoint(position0.first, position0.second),
+                         QPoint(position1.first, position1.second));
+    }
 }

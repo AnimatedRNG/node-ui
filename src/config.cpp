@@ -78,3 +78,13 @@ Config::readApplications() {
     }
     return output;
 }
+
+QColor Config::getColor(std::string name) {
+    const Json::Value color = (*root)["colors"][name];
+    if (color.size() != 4)
+        throw std::runtime_error("Color " + name + " is invalid!");
+    uint8_t colorArray[4];
+    for (int i = 0; i < color.size(); i++)
+        colorArray[i] = color[i].asInt();
+    return QColor(colorArray[0], colorArray[1], colorArray[2], colorArray[3]);
+}

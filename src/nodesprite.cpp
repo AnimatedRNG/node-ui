@@ -29,8 +29,7 @@ NodeSprite::NodeSprite(const std::pair<int, int>& position,
     _position(position),
     frame(rand() % NodeSprite::NUM_FRAMES),
     size(),
-    icons(),
-    tint {255, 255, 255} {
+    icons() {
     if (!initialized) {
         try {
             NodeSprite::loadAssets();
@@ -39,6 +38,7 @@ NodeSprite::NodeSprite(const std::pair<int, int>& position,
         }
         initialized = true;
     }
+    tint = Config::getColor("unselected");
     this->size = util::toScreenCoords(winprops,
                                       NodeSprite::getIdealSize(winprops));
     this->current = NodeSprite::unselected->copy();
@@ -56,18 +56,21 @@ void NodeSprite::destroyAssets() {
 }
 
 void NodeSprite::select() {
-    uint8_t selected[] = {0xFF, 0xDF, 0x00};
-    memcpy(&(this->tint), &selected, 3 * sizeof(int));
+    //uint8_t selected[] = {0xFF, 0xDF, 0x00};
+    //memcpy(&(this->tint), &selected, 3 * sizeof(int));
+    this->tint = Config::getColor("selected");
 }
 
 void NodeSprite::unselect() {
-    uint8_t unselected[] = {255, 255, 255};
-    memcpy(&(this->tint), &unselected, 3 * sizeof(int));
+    //uint8_t unselected[] = {255, 255, 255};
+    //memcpy(&(this->tint), &unselected, 3 * sizeof(int));
+    this->tint = Config::getColor("unselected");
 }
 
 void NodeSprite::highlight() {
-    uint8_t highlighted[] = {0x1E, 0x90, 0xFF};
-    memcpy(&(this->tint), &highlighted, 3 * sizeof(int));
+    //uint8_t highlighted[] = {0x1E, 0x90, 0xFF};
+    //memcpy(&(this->tint), &highlighted, 3 * sizeof(int));
+    this->tint = Config::getColor("highlighted");
 }
 
 void NodeSprite::setIcons(const std::vector<std::shared_ptr<QIcon>>& icons) {
@@ -76,9 +79,10 @@ void NodeSprite::setIcons(const std::vector<std::shared_ptr<QIcon>>& icons) {
 
 void NodeSprite::render(const util::WindowProperties& winprops,
                         QPainter& painter) {
-    util::renderQTImage(painter, current,
-                        this->_position.first, this->_position.second,
-                        size.first, size.second, &frame, 4, 10);
+    if ((*(Config::root))["render_sprites"].asBool())
+        util::renderQTImage(painter, current,
+                            this->_position.first, this->_position.second,
+                            size.first, size.second, &frame, 4, 10);
     this->drawOverlay(painter);
     this->drawIcons(painter);
 }
@@ -94,7 +98,7 @@ std::pair<double, double> NodeSprite::getIdealSize(const util::WindowProperties&
 }
 
 void NodeSprite::drawOverlay(QPainter& painter) {
-    painter.setBrush(QColor(tint[0], tint[1], tint[2], 100));
+    painter.setBrush(tint);
     QRectF idealRect = QRectF(this->_position.first, this->_position.second,
                               size.first, size.second);
     painter.drawEllipse(idealRect);

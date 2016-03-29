@@ -22,6 +22,7 @@
 #include <streambuf>
 
 #include <QIcon>
+#include <QColor>
 #include <QString>
 
 #include <json/config.h>
@@ -41,4 +42,6 @@ class Config {
     
     static std::shared_ptr<std::vector<std::pair<util::Command, util::vec2i>>>
     readApplications();
+    
+    static QColor getColor(std::string name);
 };

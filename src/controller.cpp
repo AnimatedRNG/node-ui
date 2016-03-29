@@ -45,8 +45,14 @@ void onReceive(std::string str, Controller* controller) {
 void Controller::updateView() {
     this->screen->deselectAllNodes();
     auto path = this->model->getPath();
-    for (auto it = path->begin(); it != path->end(); it++)
+    auto last = std::pair<int, int>(0, 0);
+    for (auto it = path->begin(); it != path->end(); it++) {
         this->screen->selectNode(*it);
+        if (last != std::make_pair(0, 0)) {
+            this->screen->drawPath(last, *it);
+        }
+        last = *it;
+    }
     this->screen->highlightNode(*(path->end() - 1));
 }
 

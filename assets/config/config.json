@@ -38,5 +38,17 @@
 	*	Mod3Mask    |    32 | Scroll Lock
 	*	Mod4Mask    |    64 | Windows
 	*/
-	"hotkey_modifier": 0
+	"hotkey_modifier": 0,
+
+	// Color scheme used by the application in
+	// RGBA format
+	"colors": {
+		"unselected": [255, 255, 255, 100],
+		"selected": [255, 223, 0, 100],
+		"highlighted": [30, 144, 255, 100],
+		"line": [30, 200, 0, 200]
+	},
+
+	// If true, animated sprites are rendered
+	"render_sprites": false
 }
