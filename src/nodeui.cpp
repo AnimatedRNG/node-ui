@@ -29,6 +29,9 @@ Controller* controller;
 
 Controller* createUIOverlay() {
     Config::readConfig();
+    const Json::Value desktopFiles = (*(Config::root))["desktop_file_dirs"];
+    for (int i = 0; i < desktopFiles.size(); i++)
+        Config::updateApplicationList(desktopFiles[i].asString().c_str());
     auto apps = Config::readApplications();
     
     // TODO: Fix odd memory corruption that happens around here on rare occasions

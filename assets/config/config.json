@@ -50,5 +50,10 @@
 	},
 
 	// If true, animated sprites are rendered
-	"render_sprites": false
+	"render_sprites": false,
+
+	// NodeUI will attempt to look for .desktop
+	// files in these locations
+	"desktop_file_dirs": ["/usr/share/applications",
+	 "~/.local/share/applications"]
 }

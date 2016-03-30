@@ -33,7 +33,7 @@ void onReceive(std::string str, Controller* controller) {
     
     auto command = controller->model->getCommand();
     if (command != nullptr) {
-        util::executeCommand(command->name);
+        util::executeCommand(command->command);
         controller->hideAll();
     }
     

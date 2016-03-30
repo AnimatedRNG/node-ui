@@ -43,7 +43,7 @@ class Model {
         for (auto& path : *allPaths) {
             // Make sure that the path is defined
             if (path.second.size() == 0)
-                throw std::runtime_error("Path is empty!");
+                continue;
             std::pair<int, int> should_be_root = path.second[0];
             
             // The first node of every path should be the root

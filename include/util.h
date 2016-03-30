@@ -65,6 +65,7 @@ namespace util {
     
     struct Command {
         std::string name;
+        std::string command;
         std::shared_ptr<QIcon> icon;
     };
     

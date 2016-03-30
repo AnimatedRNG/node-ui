@@ -18,8 +18,11 @@
 #pragma once
 
 #include <string>
+#include <iostream>
 #include <fstream>
+#include <sstream>
 #include <streambuf>
+#include <regex>
 
 #include <QIcon>
 #include <QColor>
@@ -28,20 +31,30 @@
 #include <json/config.h>
 #include <json/value.h>
 #include <json/reader.h>
+#include <json/writer.h>
 
+#include "tinydir.h"
 #include "util.h"
 
 class Config {
 
   public:
     static std::shared_ptr<Json::Value> root;
+    static std::shared_ptr<Json::Value> appRoot;
     
     static std::string readFile(const std::string& filename);
-    
+    static std::string writeFile(const std::string& filename,
+                                 const std::string& contents);
+                                 
     static void readConfig();
     
     static std::shared_ptr<std::vector<std::pair<util::Command, util::vec2i>>>
     readApplications();
     
     static QColor getColor(std::string name);
+    
+    static void updateApplicationList(std::string applicationDirectory);
+    
+    static constexpr auto CONFIG_FILE = "assets/config/config.json";
+    static constexpr auto APP_FILE = "assets/config/applications.json";
 };
