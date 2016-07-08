@@ -199,7 +199,6 @@ void LeapListener::handleHandPosition(const Leap::Hand& hand) {
                                              
             std::string gesture = getPose(hand);
             Json::Value poses = (*(Config::root))["poses"];
-            DEBUG("n_diff " << n_diff.first << ", " << n_diff.second);
             if (gesture != NOTHING) {
                 if (gesture == "BACK") {
                     relativeCenter = currentPosition;

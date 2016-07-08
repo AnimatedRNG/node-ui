@@ -50,7 +50,6 @@ class Controller {
         std::function<void(std::string)> func = receiveFunc;
         inputDevices.push_back(std::shared_ptr<InputDevice>(new KeyboardInput(
                                    func)));
-        DEBUG("Leap found? " << LEAP_FOUND);
         
         #if LEAP_FOUND == 1
         inputDevices.push_back(std::shared_ptr<InputDevice>(new LeapInput(
