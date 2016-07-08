@@ -171,13 +171,13 @@ void LeapListener::handleHandPosition(const Leap::Hand& hand) {
         // If the hand just became visible, make the palm
         // position the relative center
         if (!hadRegainedFocus) {
-            relativeCenter = hand.palmPosition();
+            relativeCenter = hand.stabilizedPalmPosition();
             relativeCenter.z = 0;
             hadRegainedFocus = true;
             lastPosition = std::make_pair(0, 0);
             actionTimestamp = timestamp();
         } else {
-            Leap::Vector currentPosition = hand.palmPosition();
+            Leap::Vector currentPosition = hand.stabilizedPalmPosition();
             currentPosition.z = 0;
 
             // Figure out how much the hand has moved from the

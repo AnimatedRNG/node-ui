@@ -71,11 +71,12 @@
     "right_handed": true,
 
     // Hand speed (mm/s) required to register gesture
+    // Not used in position mode
     "gesture_threshold_velocity": 200.0,
 
     // If the hand is going at this velocity (mm/s)
     // in the z direction, then the gesture is
-    // ignored
+    // ignored. Not used in position mode
     "z_threshold_velocity": 100.0,
 
     // Time in milliseconds until leap motion
