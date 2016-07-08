@@ -131,6 +131,9 @@ void LeapListener::handleHandVelocity(const Leap::Hand& hand) {
         
         // If we should regain focus, check events
         if (regainFocus) {
+            std::string gesture = getPose(hand);
+            if (gesture != NOTHING)
+                emitFunction((*(Config::root))[gesture].asString());
             if (checkEpsilon(angle, 180))
                 emitFunction("l_");
             else if (checkEpsilon(angle, 270))
@@ -179,22 +182,30 @@ void LeapListener::handleHandPosition(const Leap::Hand& hand) {
         } else {
             Leap::Vector currentPosition = hand.stabilizedPalmPosition();
             currentPosition.z = 0;
-
+            
             // Figure out how much the hand has moved from the
             // relative center
             Leap::Vector diff = currentPosition - relativeCenter;
             int dx = ((int) diff.x / gridSize);
             int dy = ((int) diff.y / gridSize);
-
+            
             // Normalize to -1, 0, 1
             dx = (dx != 0) ? dx / abs(dx) : 0;
             dy = (dy != 0) ? dy / abs(dy) : 0;
-
+            
             // Get the difference between this delta and the last delta
             const std::pair<int, int> n_diff(dx - lastPosition.first,
                                              dy - lastPosition.second);
                                              
-            if (n_diff == std::make_pair(0, 0))
+            std::string gesture = getPose(hand);
+            Json::Value poses = (*(Config::root))["poses"];
+            DEBUG("n_diff " << n_diff.first << ", " << n_diff.second);
+            if (gesture != NOTHING) {
+                if (gesture == "BACK") {
+                    relativeCenter = currentPosition;
+                }
+                emitFunction(poses[gesture].asString());
+            } else if (n_diff == std::make_pair(0, 0))
                 return;
             else if (n_diff == std::make_pair(-1, 0))
                 emitFunction("l_");
@@ -212,12 +223,21 @@ void LeapListener::handleHandPosition(const Leap::Hand& hand) {
                 emitFunction("ur");
             else if (n_diff == std::make_pair(1, -1))
                 emitFunction("dr");
-
+                
             // Save this delta so we don't repeat the action
             lastPosition = std::make_pair(dx, dy);
             actionTimestamp = timestamp();
         }
     }
+}
+
+std::string LeapListener::getPose(const Leap::Hand& hand) {
+    const float pinchThresh =
+        (*(Config::root))["pinch_threshold"].asFloat();
+    if (hand.pinchStrength() > pinchThresh)
+        return PINCH;
+    else
+        return NOTHING;
 }
 
 void LeapInput::onKeyEvent(QKeyEvent* event) {

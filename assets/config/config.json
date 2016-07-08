@@ -93,5 +93,12 @@
     // If position mode is enabled,
     // this option specifies the physical
     // size of a grid cell in millimeters
-    "grid_size": 50.0
+    "grid_size": 50.0,
+
+    // Threshold for pinch to be detected
+    "pinch_threshold": 0.3,
+
+    "poses": {
+        "pinch": "BACK"
+    }
 }

@@ -45,6 +45,9 @@ class LeapListener : public Leap::Listener {
                    std::chrono::system_clock::now().time_since_epoch()).
                count();
     }
+
+    const std::string PINCH = "pinch";
+    const std::string NOTHING = "nothing";
     
     bool focus;
     uint64_t delayTimestamp;
@@ -78,6 +81,7 @@ class LeapListener : public Leap::Listener {
     
     void handleHandVelocity(const Leap::Hand& hand);
     void handleHandPosition(const Leap::Hand& hand);
+    std::string getPose(const Leap::Hand& hand);
     
     std::function<void(std::string)> emitFunction;
 };
