@@ -31,6 +31,7 @@ void LeapListener::onFrame(const Leap::Controller& controller) {
     bool only_dominant = (*(Config::root))["only_dominant_hand"].asBool();
     bool right_handed = (*(Config::root))["right_handed"].asBool();
     float threshold = (*(Config::root))["gesture_threshold_velocity"].asFloat();
+    float zThresh = (*(Config::root))["z_threshold_velocity"].asFloat();
     int regainThresh =
         (*(Config::root))["gesture_threshold_velocity"].asInt();
     int actionThresh =
@@ -92,6 +93,7 @@ void LeapListener::onFrame(const Leap::Controller& controller) {
     }
     
     Leap::Vector palmVelocity = hand.palmVelocity();
+    float zMovement = palmVelocity.z;
     palmVelocity.z = 0.0;
 
     // If the window has been open for long enough and
@@ -101,7 +103,7 @@ void LeapListener::onFrame(const Leap::Controller& controller) {
                        && !isFist;
 
     // If the hand is moving fast enough
-    if (palmVelocity.magnitude() > threshold) {
+    if (palmVelocity.magnitude() > threshold && zMovement < zThresh) {
         // Get the hand angle
         float angle = atan2(palmVelocity.y, palmVelocity.x);
         angle = (angle > 0 ? angle : (2 * M_PI + angle)) * 360 / (2 * M_PI);

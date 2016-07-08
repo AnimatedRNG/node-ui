@@ -71,7 +71,12 @@
     "right_handed": true,
 
     // Hand speed required to register gesture
-    "gesture_threshold_velocity": 300.0,
+    "gesture_threshold_velocity": 200.0,
+
+    // If the hand is going at this velocity
+    // in the z direction, then the gesture is
+    // ignored
+    "z_threshold_velocity": 100.0,
 
     // Time in milliseconds until leap motion
     // registers gestures after focus is gained
