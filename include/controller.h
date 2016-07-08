@@ -30,7 +30,10 @@
 #include "screen.h"
 #include "input_device.h"
 #include "keyboard_input.h"
+
+#if LEAP_FOUND == 1
 #include "leap_input.h"
+#endif
 
 void onReceive(std::string str, void* controller);
 
@@ -47,15 +50,19 @@ class Controller {
         std::function<void(std::string)> func = receiveFunc;
         inputDevices.push_back(std::shared_ptr<InputDevice>(new KeyboardInput(
                                    func)));
+        DEBUG("Leap found? " << LEAP_FOUND);
+        
+        #if LEAP_FOUND == 1
         inputDevices.push_back(std::shared_ptr<InputDevice>(new LeapInput(
                                    func)));
+        #endif
                                    
         auto signalAll = [&](QKeyEvent * event) {
             for (auto device : this->inputDevices)
                 device->onKeyEvent(event);
         };
-
-        auto focusAll = [&](const bool& hasFocus) {
+        
+        auto focusAll = [&](const bool & hasFocus) {
             for (auto device : this->inputDevices)
                 device->onFocusChange(hasFocus);
         };

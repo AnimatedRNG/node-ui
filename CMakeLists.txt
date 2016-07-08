@@ -25,10 +25,26 @@ find_package(XLib REQUIRED)
 
 find_package(Leap)
 
-set(SRC_FILES src/util.cpp src/config.cpp src/model.cpp src/screen.cpp src/controller.cpp src/leap_input.cpp src/keyboard_input.cpp src/nodesprite.cpp)
-
 set(DEFINITIONS ${Qt5Widgets_DEFINITIONS} ${Qt5Core_DEFINITIONS} ${Qt5Gui_DEFINITIONS})
-add_definitions(${DEFINITIONS})
+
+set(SRC_FILES
+        src/util.cpp
+        src/config.cpp
+        src/model.cpp
+        src/screen.cpp
+        src/controller.cpp
+        src/keyboard_input.cpp
+        src/nodesprite.cpp)
+
+if (LEAP_FOUND)
+   set(LEAP_VALUE 1)
+   list(APPEND SRC_FILES src/leap_input.cpp)
+else ()
+   set(LEAP_VALUE 0)
+endif()
+
+add_definitions(${DEFINITIONS} -DLEAP_FOUND=${LEAP_VALUE})
+
 set(CMAKE_CXX_FLAGS "${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS} ${Qt5Core_EXECUTABLE_COMPILE_FLAGS} ${Qt5Core_EXECUTABLE_COMPILE_FLAGS}")
 
 qt5_wrap_cpp(SCREEN_MOC "${PROJECT_BINARY_DIR}/include/screen.h")
