@@ -3,7 +3,6 @@ SET(CMAKE_BUILD_TYPE "Debug")
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR}/modules )
-message(${CMAKE_MODULE_PATH})
 set(EXECUTABLE_NAME NodeUI)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_LIBRARY_OUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
@@ -39,8 +38,10 @@ set(SRC_FILES
 if (LEAP_FOUND)
    set(LEAP_VALUE 1)
    list(APPEND SRC_FILES src/leap_input.cpp)
+   message("Leap Motion SDK found.")
 else ()
    set(LEAP_VALUE 0)
+   message("Leap Motion SDK not found.")
 endif()
 
 add_definitions(${DEFINITIONS} -DLEAP_FOUND=${LEAP_VALUE})
