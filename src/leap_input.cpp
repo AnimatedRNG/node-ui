@@ -28,14 +28,12 @@ void LeapListener::onDisconnect(const Leap::Controller& controller) {
 void LeapListener::onFrame(const Leap::Controller& controller) {
     const Leap::Frame frame = controller.frame();
     
-    bool only_dominant = (*(Config::root))["only_dominant_hand"].asBool();
-    bool right_handed = (*(Config::root))["right_handed"].asBool();
-    float threshold = (*(Config::root))["gesture_threshold_velocity"].asFloat();
-    float zThresh = (*(Config::root))["z_threshold_velocity"].asFloat();
-    int regainThresh =
-        (*(Config::root))["gesture_threshold_velocity"].asInt();
-    int actionThresh =
-        (*(Config::root))["action_delay"].asInt();
+    const bool only_dominant =
+        (*(Config::root))["only_dominant_hand"].asBool();
+    const bool right_handed =
+        (*(Config::root))["right_handed"].asBool();
+    const bool position_mode =
+        (*(Config::root))["position_mode"].asBool();
         
     // I've never actually checked how many hands
     // the Leap Motion can detect. So this implementation
@@ -67,13 +65,14 @@ void LeapListener::onFrame(const Leap::Controller& controller) {
             hand = hands[0];
         }
     }
-
+    
     bool isFist = false;
     // If they don't actually have a hand out,
     // we set the had hand flag so that we don't keep
     // triggering the EXIT signal
     if (!hand.isValid()) {
         hadHand = false;
+        hadRegainedFocus = false;
         return;
     } else {
         // If there's no visible fingers, the user is making a fist
@@ -92,26 +91,44 @@ void LeapListener::onFrame(const Leap::Controller& controller) {
         hadHand = true;
     }
     
+    if (position_mode)
+        handleHandPosition(hand);
+    else
+        handleHandVelocity(hand);
+}
+
+void LeapListener::handleHandVelocity(const Leap::Hand& hand) {
+    const float threshold =
+        (*(Config::root))["gesture_threshold_velocity"].asFloat();
+    const float zThresh =
+        (*(Config::root))["z_threshold_velocity"].asFloat();
+    const int regainThresh =
+        (*(Config::root))["regain_focus_velocity"].asInt();
+    const int actionThresh =
+        (*(Config::root))["action_delay"].asInt();
+        
+    bool isFist = hand.pointables().extended().count() == 0;
+    
     Leap::Vector palmVelocity = hand.palmVelocity();
     float zMovement = palmVelocity.z;
     palmVelocity.z = 0.0;
-
+    
     // If the window has been open for long enough and
     // we haven't done anything in the action threshold
     bool regainFocus = ((timestamp() - delayTimestamp) > regainThresh)
                        && ((timestamp() - actionTimestamp) > actionThresh)
                        && !isFist;
-
+                       
     // If the hand is moving fast enough
     if (palmVelocity.magnitude() > threshold && zMovement < zThresh) {
         // Get the hand angle
         float angle = atan2(palmVelocity.y, palmVelocity.x);
         angle = (angle > 0 ? angle : (2 * M_PI + angle)) * 360 / (2 * M_PI);
-
+        
         // Mark the time so that we ignore actions within
         // too close a margin
         actionTimestamp = timestamp();
-
+        
         // If we should regain focus, check events
         if (regainFocus) {
             if (checkEpsilon(angle, 180))
@@ -130,6 +147,75 @@ void LeapListener::onFrame(const Leap::Controller& controller) {
                 emitFunction("ur");
             else if (checkEpsilon(angle, 315))
                 emitFunction("dr");
+        }
+    }
+}
+
+void LeapListener::handleHandPosition(const Leap::Hand& hand) {
+    const int regainThresh =
+        (*(Config::root))["regain_focus_threshold"].asInt();
+    const int actionThresh =
+        (*(Config::root))["action_delay"].asInt();
+    const float gridSize =
+        (*(Config::root))["grid_size"].asFloat();
+        
+    bool isFist = hand.pointables().extended().count() == 0;
+    
+    // If the window has been open for long enough and
+    // we haven't done anything in the action threshold
+    bool regainFocus = ((timestamp() - delayTimestamp) > regainThresh)
+                       && ((timestamp() - actionTimestamp) > actionThresh)
+                       && !isFist;
+                       
+    if (regainFocus) {
+        // If the hand just became visible, make the palm
+        // position the relative center
+        if (!hadRegainedFocus) {
+            relativeCenter = hand.palmPosition();
+            relativeCenter.z = 0;
+            hadRegainedFocus = true;
+            lastPosition = std::make_pair(0, 0);
+            actionTimestamp = timestamp();
+        } else {
+            Leap::Vector currentPosition = hand.palmPosition();
+            currentPosition.z = 0;
+
+            // Figure out how much the hand has moved from the
+            // relative center
+            Leap::Vector diff = currentPosition - relativeCenter;
+            int dx = ((int) diff.x / gridSize);
+            int dy = ((int) diff.y / gridSize);
+
+            // Normalize to -1, 0, 1
+            dx = (dx != 0) ? dx / abs(dx) : 0;
+            dy = (dy != 0) ? dy / abs(dy) : 0;
+
+            // Get the difference between this delta and the last delta
+            const std::pair<int, int> n_diff(dx - lastPosition.first,
+                                             dy - lastPosition.second);
+                                             
+            if (n_diff == std::make_pair(0, 0))
+                return;
+            else if (n_diff == std::make_pair(-1, 0))
+                emitFunction("l_");
+            else if (n_diff == std::make_pair(0, -1))
+                emitFunction("d_");
+            else if (n_diff == std::make_pair(0, 1))
+                emitFunction("u_");
+            else if (n_diff == std::make_pair(1, 0))
+                emitFunction("r_");
+            else if (n_diff == std::make_pair(-1, 1))
+                emitFunction("ul");
+            else if (n_diff == std::make_pair(-1, -1))
+                emitFunction("dl");
+            else if (n_diff == std::make_pair(1, 1))
+                emitFunction("ur");
+            else if (n_diff == std::make_pair(1, -1))
+                emitFunction("dr");
+
+            // Save this delta so we don't repeat the action
+            lastPosition = std::make_pair(dx, dy);
+            actionTimestamp = timestamp();
         }
     }
 }

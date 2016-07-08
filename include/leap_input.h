@@ -32,7 +32,9 @@ class LeapListener : public Leap::Listener {
     LeapListener(std::function<void(std::string)> emitter) :
         emitFunction(emitter),
         focus(false),
-        hadHand(false) {};
+        hadHand(false),
+        hadRegainedFocus(false),
+        lastPosition(0, 0) {};
         
     virtual void onConnect(const Leap::Controller&);
     virtual void onDisconnect(const Leap::Controller&);
@@ -48,6 +50,9 @@ class LeapListener : public Leap::Listener {
     uint64_t delayTimestamp;
     uint64_t actionTimestamp;
     bool hadHand;
+    bool hadRegainedFocus;
+    Leap::Vector relativeCenter;
+    std::pair<int, int> lastPosition;
   private:
   
     inline bool checkEpsilon(const float& angle,
@@ -70,6 +75,9 @@ class LeapListener : public Leap::Listener {
         else
             return (angle > lowerBound && angle < upperBound);
     }
+    
+    void handleHandVelocity(const Leap::Hand& hand);
+    void handleHandPosition(const Leap::Hand& hand);
     
     std::function<void(std::string)> emitFunction;
 };

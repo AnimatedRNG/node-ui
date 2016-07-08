@@ -70,19 +70,27 @@
     // False -> left handed
     "right_handed": true,
 
-    // Hand speed required to register gesture
+    // Hand speed (mm/s) required to register gesture
     "gesture_threshold_velocity": 200.0,
 
-    // If the hand is going at this velocity
+    // If the hand is going at this velocity (mm/s)
     // in the z direction, then the gesture is
     // ignored
     "z_threshold_velocity": 100.0,
 
     // Time in milliseconds until leap motion
     // registers gestures after focus is gained
-    "regain_focus_threshold": 500,
+    "regain_focus_threshold": 150,
 
     // Delay after every gesture
-    "action_delay": 300
-}
+    "action_delay": 300,
 
+    // Use the position of your hand
+    // rather than its velocity
+    "position_mode": true,
+
+    // If position mode is enabled,
+    // this option specifies the physical
+    // size of a grid cell in millimeters
+    "grid_size": 50.0
+}
