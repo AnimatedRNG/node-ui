@@ -59,3 +59,7 @@ void KeyboardInput::onKeyEvent(QKeyEvent* event) {
     else if (checkIfKeyMatches(event, "EXIT", keys))
         emitFunction("EXIT");
 }
+
+void KeyboardInput::onFocusChange(const bool& hasFocus) {
+    
+}

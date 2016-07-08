@@ -36,4 +36,5 @@ class KeyboardInput : public InputDevice {
         InputDevice(emitter) { }
         
     void onKeyEvent(QKeyEvent* event);
+    void onFocusChange(const bool& hasFocus);
 };

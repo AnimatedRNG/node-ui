@@ -28,6 +28,7 @@ class InputDevice {
     }
     
     virtual void onKeyEvent(QKeyEvent* event) = 0;
+    virtual void onFocusChange(const bool& hasFocus) = 0;
     
     std::function<void(std::string)> emitFunction;
 };

@@ -1,59 +1,83 @@
 {
-	/*
-	*	u_		Up
-	*	ur		Up Right
-	*	ul		Up Left
-	*	l_		Left
-	*	d_		Down
-	*	dr		Down Right
-	*	dl		Down Left
-	*	r_		Right
-	*	BACK	Go back
-	*	EXIT	Close launcher
-	*/
-	"keys": {
-		"u_": ["k", "Up", "8", "w"],
-		"ur": ["u", "9"],
-		"ul": ["y", "7"],
-		"l_": ["h", "Left", "4", "a"],
-		"d_": ["j", "Down", "2", "s"],
-		"dr": ["n", "3"],
-		"dl": ["b", "1"],
-		"r_": ["l", "Right", "6", "d"],
-		"BACK": ["Backspace"],
-		"EXIT": ["Escape"]
-	},
-	
-	// The following hotkey is an XLib keysym
-	"hotkey": "Super_L",
+    /*
+     *       u_              Up
+     *       ur              Up Right
+     *       ul              Up Left
+     *       l_              Left
+     *       d_              Down
+     *       dr              Down Right
+     *       dl              Down Left
+     *       r_              Right
+     *       BACK    Go back
+     *       EXIT    Close launcher
+     */
+    "keys": {
+        "u_": ["k", "Up", "8", "w"],
+        "ur": ["u", "9"],
+        "ul": ["y", "7"],
+        "l_": ["h", "Left", "4", "a"],
+        "d_": ["j", "Down", "2", "s"],
+        "dr": ["n", "3"],
+        "dl": ["b", "1"],
+        "r_": ["l", "Right", "6", "d"],
+        "BACK": ["Backspace"],
+        "EXIT": ["Escape"]
+    },
+    
+    // The following hotkey is an XLib keysym
+    "hotkey": "Super_R",
 
-	/*
-	*	Mask        | Value | Key
-	*	------------+-------+------------
-	*	ShiftMask   |     1 | Shift
-	*	LockMask    |     2 | Caps Lock
-	*	ControlMask |     4 | Ctrl
-	*	Mod1Mask    |     8 | Alt
-	*	Mod2Mask    |    16 | Num Lock
-	*	Mod3Mask    |    32 | Scroll Lock
-	*	Mod4Mask    |    64 | Windows
-	*/
-	"hotkey_modifier": 0,
+    /*
+     *       Mask        | Value | Key
+     *       ------------+-------+------------
+     *       ShiftMask   |     1 | Shift
+     *       LockMask    |     2 | Caps Lock
+     *       ControlMask |     4 | Ctrl
+     *       Mod1Mask    |     8 | Alt
+     *       Mod2Mask    |    16 | Num Lock
+     *       Mod3Mask    |    32 | Scroll Lock
+     *       Mod4Mask    |    64 | Windows
+     */
+    "hotkey_modifier": 0,
 
-	// Color scheme used by the application in
-	// RGBA format
-	"colors": {
-		"unselected": [255, 255, 255, 100],
-		"selected": [255, 223, 0, 100],
-		"highlighted": [30, 144, 255, 100],
-		"line": [30, 200, 0, 200]
-	},
+    // Color scheme used by the application in
+    // RGBA format
+    "colors": {
+        "unselected": [255, 255, 255, 100],
+        "selected": [255, 223, 0, 100],
+        "highlighted": [30, 144, 255, 100],
+        "line": [30, 200, 0, 200]
+    },
 
-	// If true, animated sprites are rendered
-	"render_sprites": false,
+    // If true, animated sprites are rendered
+    "render_sprites": false,
 
-	// NodeUI will attempt to look for .desktop
-	// files in these locations
-	"desktop_file_dirs": ["/usr/share/applications",
-	 "~/.local/share/applications"]
+    // NodeUI will attempt to look for .desktop
+    // files in these locations
+    "desktop_file_dirs": ["/usr/share/applications",
+                          "~/.local/share/applications"],
+
+    /*
+     * Leap Motion settings
+     */
+
+    // If true, only the user's dominant hand
+    // will be used for gestures. Otherwise
+    // the first visible hand will be used
+    "only_dominant_hand": false,
+
+    // True  -> right handed
+    // False -> left handed
+    "right_handed": true,
+
+    // Hand speed required to register gesture
+    "gesture_threshold_velocity": 300.0,
+
+    // Time in milliseconds until leap motion
+    // registers gestures after focus is gained
+    "regain_focus_threshold": 500,
+
+    // Delay after every gesture
+    "action_delay": 300
 }
+

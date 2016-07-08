@@ -50,6 +50,7 @@ class UIOverlay : public QWidget {
         default;                                                                            // Move assignment operator
         
     void setController(std::function<void(QKeyEvent*)> controller);
+    void setFocusHandler(std::function<void(const bool& hasFocus)> handler);
     
     void start();
     static void terminate();
@@ -85,11 +86,15 @@ class UIOverlay : public QWidget {
     void closeEvent(QCloseEvent* event);
     
     void changeEvent(QEvent* event);
+    
+    void focusInEvent(QFocusEvent* event) override;
+    void focusOutEvent(QFocusEvent* event) override;
   private:
     void render(QPainter& painter);
     
     util::WindowProperties properties;
     std::function<void(QKeyEvent*)> controller;
+    std::function<void(const bool& hasFocus)> focusHandler;
     
     std::unordered_map<std::pair<int, int>, std::shared_ptr<NodeSprite>, pairhash>
     nodesprites;

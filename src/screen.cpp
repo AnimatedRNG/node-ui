@@ -62,6 +62,7 @@ UIOverlay::UIOverlay(QWidget* parent) :
             this->nodesprites.insert(std::make_pair(index, sprite));
         }
     }
+    this->setFocusPolicy(Qt::StrongFocus);
 }
 
 UIOverlay::~UIOverlay() {
@@ -105,8 +106,21 @@ void UIOverlay::changeEvent(QEvent* event) {
     }
 }
 
+void UIOverlay::focusInEvent(QFocusEvent * event) {
+    focusHandler(true);
+}
+
+void UIOverlay::focusOutEvent(QFocusEvent * event) {
+    focusHandler(false);
+}
+
 void UIOverlay::setController(std::function<void(QKeyEvent*)> controller) {
     this->controller = controller;
+}
+
+void UIOverlay::setFocusHandler(
+    std::function<void(const bool& hasFocus)> handler) {
+    this->focusHandler = handler;
 }
 
 void UIOverlay::start() {

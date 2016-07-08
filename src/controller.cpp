@@ -24,6 +24,11 @@ void onReceive(std::string str, Controller* controller) {
         controller->hideAll();
         return;
     }
+
+    if (str == "SHOW") {
+        controller->showAll();
+        return;
+    }
     
     if (str == "BACK") {
         controller->model = controller->model->selectParent();

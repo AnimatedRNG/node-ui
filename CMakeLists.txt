@@ -23,7 +23,9 @@ find_package(Jsoncpp REQUIRED)
 # Later I'll try to find a workaround.
 find_package(XLib REQUIRED)
 
-set(SRC_FILES src/util.cpp src/config.cpp src/model.cpp src/screen.cpp src/controller.cpp src/keyboard_input.cpp src/nodesprite.cpp)
+find_package(Leap)
+
+set(SRC_FILES src/util.cpp src/config.cpp src/model.cpp src/screen.cpp src/controller.cpp src/leap_input.cpp src/keyboard_input.cpp src/nodesprite.cpp)
 
 set(DEFINITIONS ${Qt5Widgets_DEFINITIONS} ${Qt5Core_DEFINITIONS} ${Qt5Gui_DEFINITIONS})
 add_definitions(${DEFINITIONS})
@@ -33,10 +35,10 @@ qt5_wrap_cpp(SCREEN_MOC "${PROJECT_BINARY_DIR}/include/screen.h")
 
 add_executable(${EXECUTABLE_NAME} ${SRC_FILES} ${SCREEN_MOC} src/nodeui.cpp)
 
-set(INCLUDE_DIRS "${PROJECT_BINARY_DIR}/include" ${JSONCPP_INCLUDE_DIRS} ${Qt5Core_INCLUDES} ${Qt5Gui_INCLUDES} ${Qt5Widgets_INCLUDES} ${XLIB_INCLUDE_PATH})
+set(INCLUDE_DIRS "${PROJECT_BINARY_DIR}/include" ${JSONCPP_INCLUDE_DIRS} ${Qt5Core_INCLUDES} ${Qt5Gui_INCLUDES} ${Qt5Widgets_INCLUDES} ${XLIB_INCLUDE_PATH} ${LEAP_INCLUDE_DIR})
 include_directories(${INCLUDE_DIRS})
 
-set(LIBS ${JSONCPP_LIBRARIES} ${Qt5Core_LIBRARIES} ${Qt5Gui_LIBRARIES} ${Qt5Widgets_LIBRARIES} ${XLIB_LIBRARY} -lpthread )
+set(LIBS ${JSONCPP_LIBRARIES} ${Qt5Core_LIBRARIES} ${Qt5Gui_LIBRARIES} ${Qt5Widgets_LIBRARIES} ${XLIB_LIBRARY} ${LEAP_LIBRARIES} -lpthread )
 
 add_library("${EXECUTABLE_NAME}_core" ${SRC_FILES} ${SCREEN_MOC})
 
