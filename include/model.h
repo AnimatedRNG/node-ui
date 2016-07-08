@@ -33,7 +33,7 @@ class Model {
     Model(std::shared_ptr<std::vector<command_position>>
           allPaths) :
         currentPosition(this->getRootPosition()) {
-        if (allPaths->size() == 0 && (*allPaths)[0].second.size() > 0)
+        if (allPaths->size() == 0 || (*allPaths)[0].second.size() > 0)
             return;
             
         std::pair<int, int> root_node = this->getRootPosition();

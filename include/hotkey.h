@@ -43,7 +43,13 @@ namespace HotKey {
         keycode = XKeysymToKeycode(dpy, keysym);
         modifiers = mods;
         
-        XGrabKey(dpy, keycode, modifiers, root, False, GrabModeAsync, GrabModeAsync);
+        XGrabKey(dpy,
+                 keycode,
+                 modifiers,
+                 root,
+                 False,
+                 GrabModeAsync,
+                 GrabModeAsync);
         XSelectInput(dpy, root, KeyPressMask);
         auto inputThread = [&](std::function<void()> func) {
             XEvent ev;

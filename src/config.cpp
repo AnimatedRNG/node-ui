@@ -118,7 +118,9 @@ void Config::updateApplicationList(std::string applicationDirectory) {
         if (file.is_dir)
             continue;
             
-        std::istringstream contents(readFile(applicationDirectory + file.name));
+        std::istringstream contents(readFile(
+                                        applicationDirectory + "/" +
+                                        file.name));
         std::string line;
         
         const std::string nameStr = std::string("Name=");
