@@ -62,7 +62,7 @@ add_library("${EXECUTABLE_NAME}_core" ${SRC_FILES} ${SCREEN_MOC})
 target_link_libraries("${EXECUTABLE_NAME}_core" ${LIBS})
 target_compile_features("${EXECUTABLE_NAME}_core" PRIVATE cxx_range_for)
 
-target_link_libraries(${EXECUTABLE_NAME} "${EXECUTABLE_NAME}_core")
+target_link_libraries(${EXECUTABLE_NAME} ${LIBS})
 target_compile_features(${EXECUTABLE_NAME} PRIVATE cxx_range_for)
 
 find_package(CxxTest)
