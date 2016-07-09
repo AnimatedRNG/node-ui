@@ -186,13 +186,44 @@ void LeapListener::handleHandPosition(const Leap::Hand& hand) {
             // Figure out how much the hand has moved from the
             // relative center
             Leap::Vector diff = currentPosition - relativeCenter;
-            int dx = ((int) diff.x / gridSize);
-            int dy = ((int) diff.y / gridSize);
             
-            // Normalize to -1, 0, 1
-            dx = (dx != 0) ? dx / abs(dx) : 0;
-            dy = (dy != 0) ? dy / abs(dy) : 0;
-            
+            if (diff.magnitude() < gridSize)
+                return;
+
+            // Get the angle
+            float angle = atan2(diff.y, diff.x);
+            angle = (angle > 0 ? angle : (2 * M_PI + angle)) * 360 / (2 * M_PI);
+            int dx, dy;
+
+            // Determine which sector our hand is in
+            if (checkEpsilon(angle, 180)) {
+                dx = -1;
+                dy = 0;
+            } else if (checkEpsilon(angle, 270)) {
+                dx = 0;
+                dy = -1;
+            } else if (checkEpsilon(angle, 90)) {
+                dx = 0;
+                dy = 1;
+            } else if (checkEpsilon(angle, 0)) {
+                dx = 1;
+                dy = 0;
+            } else if (checkEpsilon(angle, 135)) {
+                dx = -1;
+                dy = 1;
+            } else if (checkEpsilon(angle, 225)) {
+                dx = -1;
+                dy = -1;
+            } else if (checkEpsilon(angle, 45)) {
+                dx = 1;
+                dy = 1;
+            } else if (checkEpsilon(angle, 315)) {
+                dx = 1;
+                dy = -1;
+            }
+            DEBUG("(" << dx << ", " << dy << ") Angle " << angle);
+            DEBUG("lastPosition " << lastPosition.first << ", " << lastPosition.second);
+                
             // Get the difference between this delta and the last delta
             const std::pair<int, int> n_diff(dx - lastPosition.first,
                                              dy - lastPosition.second);

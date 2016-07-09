@@ -72,12 +72,12 @@
 
     // Hand speed (mm/s) required to register gesture
     // Not used in position mode
-    "gesture_threshold_velocity": 200.0,
+    "gesture_threshold_velocity": 400.0,
 
     // If the hand is going at this velocity (mm/s)
     // in the z direction, then the gesture is
     // ignored. Not used in position mode
-    "z_threshold_velocity": 100.0,
+    "z_threshold_velocity": 50.0,
 
     // Time in milliseconds until leap motion
     // registers gestures after focus is gained
@@ -93,7 +93,7 @@
     // If position mode is enabled,
     // this option specifies the physical
     // size of a grid cell in millimeters
-    "grid_size": 50.0,
+    "grid_size": 100.0,
 
     // Threshold for pinch to be detected
     "pinch_threshold": 0.3,
