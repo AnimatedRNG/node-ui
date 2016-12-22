@@ -25,8 +25,6 @@
 #include "controller.h"
 #include "hotkey.h"
 
-Controller* controller;
-
 Controller* createUIOverlay() {
     Config::readConfig();
     const Json::Value desktopFiles = (*(Config::root))["desktop_file_dirs"];
@@ -37,12 +35,12 @@ Controller* createUIOverlay() {
     // TODO: Fix odd memory corruption that happens around here on rare occasions
     std::shared_ptr<UIOverlay> screen(new UIOverlay);
     std::shared_ptr<Model> model(new Model(apps));
-    controller = new Controller(model, screen);
+    Controller* controller = new Controller(model, screen);
     screen->start();
     return controller;
 }
 
-void onHotkeyPress() {
+void onHotkeyPress(Controller* controller) {
     controller->toggleOverlay();
 }
 
@@ -52,9 +50,10 @@ int main(int argc, char* argv[]) {
     int hotkey = XStringToKeysym((*(Config::root))["hotkey"].
                                  asString().c_str());
     int modifier = (*(Config::root))["hotkey_modifier"].asInt();
-    HotKey::configureHotkey(hotkey, modifier, onHotkeyPress);
+    HotKey::configureHotkey(hotkey, modifier, onHotkeyPress, controller);
     int result = app.exec();
     UIOverlay::terminate();
     HotKey::dispose();
+    delete controller;
     return result;
 }

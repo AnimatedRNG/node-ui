@@ -54,6 +54,7 @@ struct pairhash {
 namespace util {
 
     typedef std::vector<std::pair<int, int>> vec2i;
+    typedef std::shared_ptr<std::vector<std::pair<int, int>>> vec2i_ptr;
     
     static constexpr int GRID_WIDTH = 3;
     static constexpr int GRID_HEIGHT = 3;

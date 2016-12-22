@@ -27,14 +27,14 @@
 
 class Model {
   public:
-    typedef std::pair<util::Command, util::vec2i> command_position;
+    typedef std::pair<util::Command, util::vec2i_ptr> command_position;
     // Populate node tree, allPaths is a vector of diffent paths,
     // current node will be root
     Model(std::shared_ptr<std::vector<command_position>>
           allPaths) :
         currentPosition(this->getRootPosition()) {
-        if (allPaths->size() == 0 || (*allPaths)[0].second.size() > 0)
-            return;
+        if (allPaths->size() == 0 || (*allPaths)[0].second->size() > 0)
+            throw std::runtime_error("Path inputs are broken");
             
         std::pair<int, int> root_node = this->getRootPosition();
         std::shared_ptr<Node<util::Command>> root(new Node<util::Command>);
@@ -42,9 +42,9 @@ class Model {
         // For every path in the paths
         for (auto& path : *allPaths) {
             // Make sure that the path is defined
-            if (path.second.size() == 0)
+            if (path.second->size() == 0)
                 continue;
-            std::pair<int, int> should_be_root = path.second[0];
+            std::pair<int, int> should_be_root = (*(path.second))[0];
             
             // The first node of every path should be the root
             if (should_be_root != root_node)
@@ -54,7 +54,7 @@ class Model {
             
             std::shared_ptr<Node<util::Command>> curr = root;
             // For every node in the path
-            for (auto& node : path.second) {
+            for (auto& node : *(path.second)) {
                 std::pair<int, int> delta = node - lastPosition;
                 lastPosition = node;
                 if (delta == std::make_pair<int, int>(0, 0))

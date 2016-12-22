@@ -23,6 +23,7 @@
 #include <X11/Xutil.h>
 
 #include "util.h"
+#include "controller.h"
 
 #define SUPER_LEFT 0xffeb
 #define CTRL_MASK 4
@@ -37,7 +38,8 @@ namespace HotKey {
     bool die = false;
     
     void configureHotkey(int keysym, int mods,
-                         std::function<void()> callback) {
+                         std::function<void(Controller*)> callback,
+                         Controller* controller) {
         dpy = XOpenDisplay(0);
         root = DefaultRootWindow(dpy);
         keycode = XKeysymToKeycode(dpy, keysym);
@@ -51,13 +53,13 @@ namespace HotKey {
                  GrabModeAsync,
                  GrabModeAsync);
         XSelectInput(dpy, root, KeyPressMask);
-        auto inputThread = [&](std::function<void()> func) {
+        auto inputThread = [&](std::function<void(Controller*)> func) {
             XEvent ev;
             while (!die) {
                 XNextEvent(dpy, &ev);
                 switch (ev.type) {
                     case KeyPress:
-                        func();
+                        func(controller);
                         break;
                 }
             }

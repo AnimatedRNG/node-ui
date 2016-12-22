@@ -48,7 +48,8 @@ class Config {
                                  
     static void readConfig();
     
-    static std::shared_ptr<std::vector<std::pair<util::Command, util::vec2i>>>
+    static std::shared_ptr<std::vector<
+    std::pair<util::Command, util::vec2i_ptr>>>
     readApplications();
     
     static QColor getColor(std::string name);

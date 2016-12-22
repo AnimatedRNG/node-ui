@@ -40,11 +40,11 @@ void Config::readConfig() {
         throw std::runtime_error("Config file is not valid JSON");
 }
 
-std::shared_ptr<std::vector<std::pair<util::Command, util::vec2i>>>
+std::shared_ptr<std::vector<std::pair<util::Command, util::vec2i_ptr>>>
 Config::readApplications() {
     auto output =
-        std::shared_ptr<std::vector<std::pair<util::Command, util::vec2i>>>(
-            new std::vector<std::pair<util::Command, util::vec2i>>);
+        std::shared_ptr<std::vector<std::pair<util::Command, util::vec2i_ptr>>>(
+            new std::vector<std::pair<util::Command, util::vec2i_ptr>>);
     if (appRoot == nullptr)
         appRoot = std::shared_ptr<Json::Value>(new Json::Value);
         
@@ -62,7 +62,7 @@ Config::readApplications() {
         
         auto icon = std::make_shared<QIcon>(QIcon::fromTheme(iconName));
         
-        util::vec2i pathValues;
+        util::vec2i_ptr pathValues(new util::vec2i);
         if (entry.isMember("path")) {
             const Json::Value commandPath = entry["path"];
             for (int i = 0; i < commandPath.size(); i++) {
@@ -79,11 +79,12 @@ Config::readApplications() {
                 std::pair<int, int> coord = {coordinate[0].asInt(),
                                              coordinate[1].asInt()
                                             };
-                pathValues.push_back(coord);
+                pathValues->push_back(coord);
             }
         }
         
-        std::pair<util::Command, util::vec2i> pos = {util::Command({name, command, icon}), pathValues};
+        std::pair<util::Command, util::vec2i_ptr> pos =
+            {util::Command({name, command, icon}), pathValues};
         output->push_back(pos);
     }
     return output;
