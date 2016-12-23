@@ -34,10 +34,15 @@ class ModelTestSuite : public CxxTest::TestSuite {
     
     void test_model() {
         std::vector<Model::command_position> paths;
-        paths.push_back(std::make_pair(util::Command {"Example"}, util::vec2i{ {1, 1}, {1, 2}, {2, 2} }));
-        paths.push_back(std::make_pair(util::Command {"Example2"}, util::vec2i{ {1, 1}, {1, 0}, {0, 0} }));
-        Model model(
-            std::make_shared<std::vector<Model::command_position>> (paths));
+        auto first_path = util::vec2i({ {1, 1}, {1, 2}, {2, 2} });
+        auto second_path = util::vec2i({ {1, 1}, {1, 0}, {0, 0} });
+        paths.push_back(
+            std::make_pair(util::Command {"Example"},
+                           std::make_shared<util::vec2i>(first_path)));
+        paths.push_back(
+            std::make_pair(util::Command {"Example2"},
+                           std::make_shared<util::vec2i>(second_path)));
+        Model model(paths);
         std::shared_ptr<Model> child = model.select("u_");
         assert((model.getCurrentPosition() - child->getCurrentPosition() ==
                 std::make_pair(0, 1)));
