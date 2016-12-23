@@ -57,17 +57,16 @@ include_directories(${INCLUDE_DIRS})
 
 set(LIBS ${JSONCPP_LIBRARIES} ${Qt5Core_LIBRARIES} ${Qt5Gui_LIBRARIES} ${Qt5Widgets_LIBRARIES} ${XLIB_LIBRARY} ${LEAP_LIBRARIES} -lpthread )
 
-add_library("${EXECUTABLE_NAME}_core" ${SRC_FILES} ${SCREEN_MOC})
-
-target_link_libraries("${EXECUTABLE_NAME}_core" ${LIBS})
-target_compile_features("${EXECUTABLE_NAME}_core" PRIVATE cxx_range_for)
-
 target_link_libraries(${EXECUTABLE_NAME} ${LIBS})
 target_compile_features(${EXECUTABLE_NAME} PRIVATE cxx_range_for)
 
 find_package(CxxTest)
 if(CXXTEST_FOUND)
 	# I sincerely apologize for this hack
+    add_library("${EXECUTABLE_NAME}_core" ${SRC_FILES} ${SCREEN_MOC})
+    target_link_libraries("${EXECUTABLE_NAME}_core" ${LIBS})
+    target_compile_features("${EXECUTABLE_NAME}_core" PRIVATE cxx_range_for)
+    
     include_directories(${CXXTEST_INCLUDE_DIR} ${INCLUDE_DIRS})
     enable_testing()
     set(UNITTEST_NODE_HEADERS ${CMAKE_BINARY_DIR}/test/node_test.h)
