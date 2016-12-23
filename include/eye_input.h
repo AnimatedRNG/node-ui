@@ -17,15 +17,41 @@
 
 #pragma once
 
+#include <thread>
+#include <atomic>
+#include <iostream>
+
+#include "opencv2/objdetect.hpp"
+#include "opencv2/videoio.hpp"
+#include "opencv2/highgui.hpp"
+#include "opencv2/imgproc.hpp"
+
 #include "util.h"
 #include "input_device.h"
 #include "config.h"
 
+class EyeTracker {
+  public:
+    static std::atomic_flag stopEyeTracking;
+    
+    EyeTracker() {
+        stopEyeTracking.test_and_set();
+    }
+    
+    void stopTracking();
+    
+    void eyeTracking(std::function<void(std::string)> emitter);
+};
+
 class EyeInput : public InputDevice {
   public:
     EyeInput(std::function<void(std::string)> emitter):
-        InputDevice(emitter) { }
-
+        InputDevice(emitter),
+        tracker() { }
+        
     virtual void onKeyEvent(QKeyEvent* event);
     void onFocusChange(const bool& hasFocus);
+  private:
+    EyeTracker tracker;
 };
+

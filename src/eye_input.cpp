@@ -17,10 +17,43 @@
 
 #include "eye_input.h"
 
+std::atomic_flag EyeTracker::stopEyeTracking = ATOMIC_FLAG_INIT;
+
 void EyeInput::onFocusChange(const bool& hasFocus) {
-    DEBUG("Gained focus");
+    if (hasFocus) {
+        auto runTracker = [](EyeTracker tracker,
+        std::function<void(std::string)> emitter) {
+            tracker.eyeTracking(emitter);
+        };
+        std::thread et(runTracker, tracker, emitFunction);
+        et.detach();
+    } else {
+        tracker.stopTracking();
+    }
 }
 
 void EyeInput::onKeyEvent(QKeyEvent* event) {
-    
+
+}
+
+void EyeTracker::stopTracking() {
+    stopEyeTracking.clear();
+}
+
+void EyeTracker::eyeTracking(std::function<void(std::string)> emitter) {
+    cv::VideoCapture capture;
+    cv::Mat frame;
+    capture.open(-1);
+    if (!capture.isOpened()) {
+        DEBUG("Error opening video capture!");
+        stopEyeTracking.test_and_set();
+        return;
+    }
+    while (stopEyeTracking.test_and_set() && capture.read(frame)) {
+        if (frame.empty()) {
+            DEBUG("No captured frame!");
+            break;
+        }
+    }
+    DEBUG("NOT EYE TRACKING");
 }
