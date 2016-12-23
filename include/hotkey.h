@@ -53,7 +53,8 @@ namespace HotKey {
                  GrabModeAsync,
                  GrabModeAsync);
         XSelectInput(dpy, root, KeyPressMask);
-        auto inputThread = [&](std::function<void(Controller*)> func) {
+        auto inputThread = [&](std::function<void(Controller*)> func,
+                               Controller* controller) {
             XEvent ev;
             while (!die) {
                 XNextEvent(dpy, &ev);
@@ -64,7 +65,7 @@ namespace HotKey {
                 }
             }
         };
-        std::thread hotkeyListener(inputThread, callback);
+        std::thread hotkeyListener(inputThread, callback, controller);
         hotkeyListener.detach();
     }
     

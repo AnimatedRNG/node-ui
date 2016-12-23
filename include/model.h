@@ -30,17 +30,16 @@ class Model {
     typedef std::pair<util::Command, util::vec2i_ptr> command_position;
     // Populate node tree, allPaths is a vector of diffent paths,
     // current node will be root
-    Model(std::shared_ptr<std::vector<command_position>>
-          allPaths) :
+    Model(const std::vector<command_position> &allPaths) :
         currentPosition(this->getRootPosition()) {
-        if (allPaths->size() == 0 || (*allPaths)[0].second->size() > 0)
+        if (allPaths.size() == 0)
             throw std::runtime_error("Path inputs are broken");
             
         std::pair<int, int> root_node = this->getRootPosition();
         std::shared_ptr<Node<util::Command>> root(new Node<util::Command>);
         
         // For every path in the paths
-        for (auto& path : *allPaths) {
+        for (auto& path : allPaths) {
             // Make sure that the path is defined
             if (path.second->size() == 0)
                 continue;

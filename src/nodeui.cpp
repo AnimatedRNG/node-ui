@@ -25,16 +25,18 @@
 #include "controller.h"
 #include "hotkey.h"
 
+
 Controller* createUIOverlay() {
     Config::readConfig();
     const Json::Value desktopFiles = (*(Config::root))["desktop_file_dirs"];
     for (int i = 0; i < desktopFiles.size(); i++)
         Config::updateApplicationList(desktopFiles[i].asString().c_str());
-    auto apps = Config::readApplications();
+    std::shared_ptr<std::vector<std::pair<util::Command, util::vec2i_ptr>>>
+    apps = Config::readApplications();
     
     // TODO: Fix odd memory corruption that happens around here on rare occasions
     std::shared_ptr<UIOverlay> screen(new UIOverlay);
-    std::shared_ptr<Model> model(new Model(apps));
+    std::shared_ptr<Model> model(new Model(*apps));
     Controller* controller = new Controller(model, screen);
     screen->start();
     return controller;

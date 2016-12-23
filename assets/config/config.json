@@ -25,7 +25,7 @@
     },
     
     // The following hotkey is an XLib keysym
-    "hotkey": "Super_R",
+    "hotkey": "Alt_R",
 
     /*
      *       Mask        | Value | Key
