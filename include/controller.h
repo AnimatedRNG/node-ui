@@ -35,6 +35,10 @@
 #include "leap_input.h"
 #endif
 
+#if OpenCV_FOUND == 1
+#include "eye_input.h"
+#endif
+
 void onReceive(std::string str, void* controller);
 
 class Controller {
@@ -50,12 +54,18 @@ class Controller {
         std::function<void(std::string)> func = receiveFunc;
         inputDevices.push_back(std::shared_ptr<InputDevice>(new KeyboardInput(
                                    func)));
-        
-        #if LEAP_FOUND == 1
+                                   
+#if LEAP_FOUND == 1
         inputDevices.push_back(std::shared_ptr<InputDevice>(new LeapInput(
                                    func)));
-        #endif
+#endif
                                    
+#if OpenCV_FOUND == 1
+        if ((*(Config::root))["eye_tracking_enabled"].asBool())
+            inputDevices.push_back(std::shared_ptr<InputDevice>(new EyeInput(
+                                       func)));
+#endif
+                                       
         auto signalAll = [&](QKeyEvent * event) {
             for (auto device : this->inputDevices)
                 device->onKeyEvent(event);

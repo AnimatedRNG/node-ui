@@ -100,5 +100,12 @@
 
     "poses": {
         "pinch": "BACK"
-    }
+    },
+
+    /*
+     * Eye tracking settings
+     */
+
+    "eye_tracking_enabled": true
+
 }

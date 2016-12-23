@@ -14,6 +14,8 @@ find_package(Qt5Core REQUIRED)
 find_package(Qt5Gui REQUIRED)
 find_package(Qt5Widgets REQUIRED)
 
+find_package(OpenCV)
+
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS}")
 
 find_package(Jsoncpp REQUIRED)
@@ -44,7 +46,16 @@ else ()
    message("Leap Motion SDK not found.")
 endif()
 
-add_definitions(${DEFINITIONS} -DLEAP_FOUND=${LEAP_VALUE})
+if (OpenCV_FOUND)
+   set(OpenCV_VALUE 1)
+   list(APPEND SRC_FILES src/eye_input.cpp)
+   message("OpenCV found.")
+else ()
+   set(OpenCV_VALUE 0)
+   message("OpenCV not found.")
+endif()
+
+add_definitions(${DEFINITIONS} -DLEAP_FOUND=${LEAP_VALUE} -DOpenCV_FOUND=${OpenCV_VALUE})
 
 set(CMAKE_CXX_FLAGS "${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS} ${Qt5Core_EXECUTABLE_COMPILE_FLAGS} ${Qt5Core_EXECUTABLE_COMPILE_FLAGS}")
 
@@ -52,10 +63,10 @@ qt5_wrap_cpp(SCREEN_MOC "${PROJECT_BINARY_DIR}/include/screen.h")
 
 add_executable(${EXECUTABLE_NAME} ${SRC_FILES} ${SCREEN_MOC} src/nodeui.cpp)
 
-set(INCLUDE_DIRS "${PROJECT_BINARY_DIR}/include" ${JSONCPP_INCLUDE_DIRS} ${Qt5Core_INCLUDES} ${Qt5Gui_INCLUDES} ${Qt5Widgets_INCLUDES} ${XLIB_INCLUDE_PATH} ${LEAP_INCLUDE_DIR})
+set(INCLUDE_DIRS "${PROJECT_BINARY_DIR}/include" ${JSONCPP_INCLUDE_DIRS} ${Qt5Core_INCLUDES} ${Qt5Gui_INCLUDES} ${Qt5Widgets_INCLUDES} ${XLIB_INCLUDE_PATH} ${LEAP_INCLUDE_DIR} ${OpenCV_INCLUDE_DIRS})
 include_directories(${INCLUDE_DIRS})
 
-set(LIBS ${JSONCPP_LIBRARIES} ${Qt5Core_LIBRARIES} ${Qt5Gui_LIBRARIES} ${Qt5Widgets_LIBRARIES} ${XLIB_LIBRARY} ${LEAP_LIBRARIES} -lpthread )
+set(LIBS ${JSONCPP_LIBRARIES} ${Qt5Core_LIBRARIES} ${Qt5Gui_LIBRARIES} ${Qt5Widgets_LIBRARIES} ${XLIB_LIBRARY} ${LEAP_LIBRARIES} ${OpenCV_LIBS} -lpthread )
 
 target_link_libraries(${EXECUTABLE_NAME} ${LIBS})
 target_compile_features(${EXECUTABLE_NAME} PRIVATE cxx_range_for)
