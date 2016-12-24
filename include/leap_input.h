@@ -23,7 +23,6 @@
 #include "config.h"
 
 #include <stdexcept>
-#include <chrono>
 
 #include "Leap.h"
 
@@ -39,12 +38,6 @@ class LeapListener : public Leap::Listener {
     virtual void onConnect(const Leap::Controller&);
     virtual void onDisconnect(const Leap::Controller&);
     virtual void onFrame(const Leap::Controller&);
-    
-    inline static uint64_t timestamp() {
-        return std::chrono::duration_cast<std::chrono::milliseconds>(
-                   std::chrono::system_clock::now().time_since_epoch()).
-               count();
-    }
 
     const std::string PINCH = "pinch";
     const std::string NOTHING = "nothing";

@@ -85,7 +85,7 @@ void LeapListener::onFrame(const Leap::Controller& controller) {
         // then show the window
         if (!focus && !hadHand && !isFist) {
             emitFunction("SHOW");
-            delayTimestamp = timestamp();
+            delayTimestamp = util::timestamp();
         }
         // Mark the hand as visible
         hadHand = true;
@@ -115,8 +115,8 @@ void LeapListener::handleHandVelocity(const Leap::Hand& hand) {
     
     // If the window has been open for long enough and
     // we haven't done anything in the action threshold
-    bool regainFocus = ((timestamp() - delayTimestamp) > regainThresh)
-                       && ((timestamp() - actionTimestamp) > actionThresh)
+    bool regainFocus = ((util::timestamp() - delayTimestamp) > regainThresh)
+                       && ((util::timestamp() - actionTimestamp) > actionThresh)
                        && !isFist;
                        
     // If the hand is moving fast enough
@@ -127,7 +127,7 @@ void LeapListener::handleHandVelocity(const Leap::Hand& hand) {
         
         // Mark the time so that we ignore actions within
         // too close a margin
-        actionTimestamp = timestamp();
+        actionTimestamp = util::timestamp();
         
         // If we should regain focus, check events
         if (regainFocus) {
@@ -166,8 +166,8 @@ void LeapListener::handleHandPosition(const Leap::Hand& hand) {
     
     // If the window has been open for long enough and
     // we haven't done anything in the action threshold
-    bool regainFocus = ((timestamp() - delayTimestamp) > regainThresh)
-                       && ((timestamp() - actionTimestamp) > actionThresh)
+    bool regainFocus = ((util::timestamp() - delayTimestamp) > regainThresh)
+                       && ((util::timestamp() - actionTimestamp) > actionThresh)
                        && !isFist;
                        
     if (regainFocus) {
@@ -178,7 +178,7 @@ void LeapListener::handleHandPosition(const Leap::Hand& hand) {
             relativeCenter.z = 0;
             hadRegainedFocus = true;
             lastPosition = std::make_pair(0, 0);
-            actionTimestamp = timestamp();
+            actionTimestamp = util::timestamp();
         } else {
             Leap::Vector currentPosition = hand.stabilizedPalmPosition();
             currentPosition.z = 0;
@@ -189,12 +189,12 @@ void LeapListener::handleHandPosition(const Leap::Hand& hand) {
             
             if (diff.magnitude() < gridSize)
                 return;
-
+                
             // Get the angle
             float angle = atan2(diff.y, diff.x);
             angle = (angle > 0 ? angle : (2 * M_PI + angle)) * 360 / (2 * M_PI);
             int dx, dy;
-
+            
             // Determine which sector our hand is in
             if (checkEpsilon(angle, 180)) {
                 dx = -1;
@@ -223,7 +223,7 @@ void LeapListener::handleHandPosition(const Leap::Hand& hand) {
             }
             DEBUG("(" << dx << ", " << dy << ") Angle " << angle);
             DEBUG("lastPosition " << lastPosition.first << ", " << lastPosition.second);
-                
+            
             // Get the difference between this delta and the last delta
             const std::pair<int, int> n_diff(dx - lastPosition.first,
                                              dy - lastPosition.second);
@@ -256,7 +256,7 @@ void LeapListener::handleHandPosition(const Leap::Hand& hand) {
                 
             // Save this delta so we don't repeat the action
             lastPosition = std::make_pair(dx, dy);
-            actionTimestamp = timestamp();
+            actionTimestamp = util::timestamp();
         }
     }
 }
@@ -277,5 +277,5 @@ void LeapInput::onKeyEvent(QKeyEvent* event) {
 void LeapInput::onFocusChange(const bool& hasFocus) {
     // Set the focus and put a delay down
     listener.focus = hasFocus;
-    listener.delayTimestamp = LeapListener::timestamp();
+    listener.delayTimestamp = util::timestamp();
 }

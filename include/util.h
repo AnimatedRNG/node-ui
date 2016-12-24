@@ -28,6 +28,7 @@
 #include <iostream>
 #include <fstream>
 #include <algorithm>
+#include <chrono>
 
 #include <stdlib.h>
 #include <string.h>
@@ -81,6 +82,12 @@ namespace util {
     
     inline std::ostream& operator<<(std::ostream& strm, Command const& command) {
         return strm << command.name;
+    }
+
+    inline static uint64_t timestamp() {
+        return std::chrono::duration_cast<std::chrono::milliseconds>(
+                   std::chrono::system_clock::now().time_since_epoch()).
+               count();
     }
     
     void renderQTImage(QPainter& painter, QPixmap image, int x, int y,

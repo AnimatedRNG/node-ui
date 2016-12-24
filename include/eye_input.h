@@ -34,13 +34,19 @@ class EyeTracker {
   public:
     static std::atomic_flag stopEyeTracking;
     
-    EyeTracker() {
-        stopEyeTracking.test_and_set();
-    }
+    explicit EyeTracker();
     
     void stopTracking();
     
     void eyeTracking(std::function<void(std::string)> emitter);
+ private:
+    cv::Point computePupilLocation(cv::Mat eye);
+    cv::Mat computeMaxGradient(cv::Mat eye);
+    cv::Mat computeMagnitudes(cv::Mat mat1, cv::Mat mat2);
+    void resizeAndRender(cv::Mat image, const std::string& name);
+    
+    cv::CascadeClassifier face_cascade;
+    cv::CascadeClassifier eye_cascade;
 };
 
 class EyeInput : public InputDevice {
