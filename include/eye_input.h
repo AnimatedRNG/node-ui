@@ -45,7 +45,6 @@ class EyeTracker {
     cv::Mat computeMagnitudes(cv::Mat mat1, cv::Mat mat2);
     void resizeAndRender(cv::Mat image, const std::string& name);
     
-    cv::CascadeClassifier face_cascade;
     cv::CascadeClassifier eye_cascade;
 };
 

@@ -49,10 +49,6 @@ EyeTracker::EyeTracker() {
     cv::namedWindow("sample_eye_gradient_y");
     cv::namedWindow("sample_eye_gradient_mag");
     
-    if (!face_cascade.load("assets/tracking/lbpcascade_frontalface.xml")) {
-        throw std::runtime_error("Failed to load LBP face classifier!");
-    }
-    
     if (!eye_cascade.load(
                 "assets/tracking/haarcascade_eye_tree_eyeglasses.xml")) {
         throw std::runtime_error("Failed to load Haar eye classifier!");
@@ -70,7 +66,6 @@ void EyeTracker::eyeTracking(std::function<void(std::string)> emitter) {
         return;
     }
     auto lastTimestamp = util::timestamp();
-    std::vector<cv::Rect> faces;
     std::vector<cv::Rect> eyes;
     std::pair<cv::Rect, cv::Rect> eyeRects;
     
