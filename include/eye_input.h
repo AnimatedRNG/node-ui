@@ -18,6 +18,7 @@
 #pragma once
 
 #include <thread>
+#include <queue>
 #include <atomic>
 #include <iostream>
 
@@ -39,10 +40,15 @@ class EyeTracker {
     void stopTracking();
     
     void eyeTracking(std::function<void(std::string)> emitter);
- private:
+  private:
     cv::Point computePupilLocation(cv::Mat eye);
+    void test_center(const int& x, const int& y, cv::Mat weight, double gX,
+                     double gY, cv::Mat& out);
     cv::Mat computeMaxGradient(cv::Mat eye);
     cv::Mat computeMagnitudes(cv::Mat mat1, cv::Mat mat2);
+    double computeDynamicThreshold(cv::Mat mat, double stdDevFactor);
+    cv::Mat floodKillEdges(cv::Mat &mat);
+    cv::Mat resizeIdeal(cv::Mat image);
     void resizeAndRender(cv::Mat image, const std::string& name);
     
     cv::CascadeClassifier eye_cascade;
