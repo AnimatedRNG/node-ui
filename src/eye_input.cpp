@@ -45,12 +45,7 @@ EyeTracker::EyeTracker() {
     cv::namedWindow("eye_view");
     cv::namedWindow("left_eye");
     cv::namedWindow("right_eye");
-    cv::namedWindow("sample_eye_gradient_x");
-    cv::namedWindow("sample_eye_gradient_y");
-    cv::namedWindow("sample_eye_gradient_mag");
-    cv::namedWindow("sample_eye_weight");
-    cv::namedWindow("sample_eye_possible_centers");
-    cv::namedWindow("sample_eye_mask");
+    cv::namedWindow("eye_thresholded");
     
     if (!eye_cascade.load(
                 "assets/tracking/haarcascade_eye_tree_eyeglasses.xml")) {
@@ -71,7 +66,13 @@ void EyeTracker::eyeTracking(std::function<void(std::string)> emitter) {
     auto lastTimestamp = util::timestamp();
     std::vector<cv::Rect> eyes;
     std::pair<cv::Rect, cv::Rect> eyeRects;
-    
+    std::pair<StabilizedMedian<int>, StabilizedMedian<int>> left_eye_median =
+                std::make_pair(StabilizedMedian<int>(4),
+                               StabilizedMedian<int>(4));
+    std::pair<StabilizedMedian<int>, StabilizedMedian<int>> right_eye_median =
+                std::make_pair(StabilizedMedian<int>(4),
+                               StabilizedMedian<int>(4));
+                               
     while (stopEyeTracking.test_and_set() && capture.read(frame)) {
         if (frame.empty()) {
             DEBUG("No captured frame!");
@@ -112,18 +113,53 @@ void EyeTracker::eyeTracking(std::function<void(std::string)> emitter) {
         
         cv::imshow("eye_view", frame);
         if (eyeRects.first.area() != 0 && eyeRects.second.area() != 0) {
-            cv::Mat left_eye = frame_gray(eyeRects.first);
-            cv::Mat right_eye = frame_gray(eyeRects.second);
-            cv::Point left_eye_loc =
-                computePupilLocation(resizeIdeal(left_eye));
+            cv::Mat left_eye = resizeIdeal(frame_gray(eyeRects.first));
+            cv::Mat right_eye = resizeIdeal(frame_gray(eyeRects.second));
             cv::Point right_eye_loc =
-                computePupilLocation(resizeIdeal(right_eye));
-            cv::circle(left_eye, left_eye_loc,
-                       2,
-                       cv::Scalar(255, 0, 255), 1, 8, 0);
-            cv::circle(right_eye, right_eye_loc,
-                       2,
-                       cv::Scalar(255, 0, 255), 1, 8, 0);
+                computePupilLocationHough(right_eye);
+            cv::Point left_eye_loc =
+                computePupilLocationHough(left_eye);
+            if (right_eye_loc != cv::Point(-1, -1)) {
+                right_eye_median.first.put(right_eye_loc.x);
+                right_eye_median.second.put(right_eye_loc.y);
+            }
+            if (left_eye_loc != cv::Point(-1, -1)) {
+                left_eye_median.first.put(left_eye_loc.x);
+                left_eye_median.second.put(left_eye_loc.y);
+            }
+            
+            if (left_eye_median.first.getLength() > 0 ||
+                    left_eye_median.second.getLength() > 0) {
+                cv::Point left_eye_loc_stabilized =
+                    cv::Point(left_eye_median.first.getMedian(),
+                              left_eye_median.second.getMedian());
+                cv::circle(left_eye, left_eye_loc_stabilized,
+                           2,
+                           cv::Scalar(255, 0, 255), 1, 8, 0);
+            }
+            if (right_eye_median.first.getLength() > 0 ||
+                    right_eye_median.second.getLength() > 0) {
+                cv::Point right_eye_loc_stabilized =
+                    cv::Point(right_eye_median.first.getMedian(),
+                              right_eye_median.second.getMedian());
+                cv::circle(right_eye, right_eye_loc_stabilized,
+                           2,
+                           cv::Scalar(255, 0, 255), 1, 8, 0);
+            }
+            
+            if (left_eye_loc != cv::Point(-1, -1)) {
+                cv::circle(left_eye, left_eye_loc,
+                           10,
+                           cv::Scalar(255, 0, 255), 1, 8, 0);
+            }
+            if (right_eye_loc != cv::Point(-1, -1)) {
+                cv::circle(right_eye, right_eye_loc,
+                           10,
+                           cv::Scalar(255, 0, 255), 1, 8, 0);
+            }
+            
+            DEBUG("Left eye at " << left_eye_loc);
+            DEBUG("Right eye at " << right_eye_loc);
             resizeAndRender(left_eye, "left_eye");
             resizeAndRender(right_eye, "right_eye");
         }
@@ -132,6 +168,79 @@ void EyeTracker::eyeTracking(std::function<void(std::string)> emitter) {
     }
     capture.release();
     DEBUG("NOT EYE TRACKING");
+}
+
+cv::Point EyeTracker::computePupilLocationHough(cv::Mat eye) {
+
+    cv::Mat sharpen = (cv::Mat_<double>(3, 3) <<
+                       -1, -1, -1,
+                       -1, 9, -1,
+                       -1, -1, -1);
+                       
+    double min, max;
+    cv::minMaxLoc(eye, &min, &max);
+    cv::Mat thresholded, eye_blurred;
+    std::vector<cv::Vec3f> circles;
+    int thresh = std::max((int) min, 1);
+    cv::filter2D(eye, eye_blurred, -1, sharpen);
+    cv::HoughCircles(eye_blurred, circles, CV_HOUGH_GRADIENT, 1,
+                     eye_blurred.rows / 8,
+                     thresh * 2,
+                     10,
+                     30,
+                     50);
+    int num_circles = std::min((int) circles.size(), 5);
+    
+    int best_score = -1;
+    std::pair<cv::Point, int> best_circle =
+        std::make_pair(cv::Point(-1, -1), -1);
+        
+    for (size_t i = 0; i < num_circles; i++) {
+        cv::Point center(cvRound(circles[i][0]),
+                         cvRound(circles[i][1]));
+        int radius = cvRound(circles[i][2]);
+        
+        int width = (center.x + radius * 2 > eye_blurred.cols) ?
+                    eye_blurred.cols : center.x + radius * 2;
+        int height = (center.y + radius * 2 > eye_blurred.rows) ?
+                     eye_blurred.rows : center.y + radius * 2;
+                     
+        cv::circle(eye_blurred, center,
+                   radius,
+                   cv::Scalar(255, 0, 255), 1, 8, 0);
+                   
+        int score = getIrisScore(eye_blurred(cv::Rect(
+                width - radius,
+                height - radius,
+                radius,
+                radius)));
+        if (score > best_score) {
+            best_score = score;
+            best_circle = std::make_pair(center, radius);
+        }
+    }
+    
+    if (best_circle.second != -1)
+        cv::circle(eye_blurred, best_circle.first, best_circle.second,
+                   cv::Scalar(0, 0, 0), -1, 8, 0);
+                   
+    resizeAndRender(eye_blurred, "eye_thresholded");
+    return best_circle.first;
+}
+
+int EyeTracker::getIrisScore(cv::Mat iris) {
+    int radius = iris.cols /= 2;
+    double score = 0;
+    for (int y = 0; y < iris.rows; ++y) {
+        uchar* row = iris.ptr<uchar>(y);
+        for (int x = 0; x < iris.cols; ++x) {
+            int xC = x - iris.cols / 2;
+            int yC = y - iris.rows / 2;
+            if (std::sqrt(xC * xC + yC * yC) < radius)
+                score += row[x];
+        }
+    }
+    return score /= radius * radius * M_PI;
 }
 
 cv::Point EyeTracker::computePupilLocation(cv::Mat eye) {
@@ -325,7 +434,7 @@ cv::Mat EyeTracker::floodKillEdges(cv::Mat& mat) {
 cv::Mat EyeTracker::resizeIdeal(cv::Mat image) {
     cv::Mat image_resized;
     double aspect_ratio = ((double) image.rows) / ((double) image.cols);
-    cv::resize(image, image_resized, cv::Size(40, 40 * aspect_ratio));
+    cv::resize(image, image_resized, cv::Size(200, 200 * aspect_ratio));
     return image_resized;
 }
 
